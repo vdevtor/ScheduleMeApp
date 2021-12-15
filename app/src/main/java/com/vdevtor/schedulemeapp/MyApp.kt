@@ -14,7 +14,7 @@ class MyApp : Application() {
         startKoin {
             androidLogger(Level.ERROR)
             androidContext(this@MyApp)
-            modules(viewModelModules, scheduleMeModules)
+            modules(scheduleMeModules, viewModelModules)
         }
     }
 }
