@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.feature_login.util
+package com.vdevtor.schedulemeapp.presentation.feature_login.util
 
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions

@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ScheduleMeApp">
         <activity
-            android:name=".MainActivity"
+            android:name="com.vdevtor.schedulemeapp.presentation.feature_login.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

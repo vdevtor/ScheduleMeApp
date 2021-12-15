@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.feature_login.presentation.login_account
+package com.vdevtor.schedulemeapp.presentation.feature_login.login_account
 
 import android.os.Bundle
 import android.view.View
