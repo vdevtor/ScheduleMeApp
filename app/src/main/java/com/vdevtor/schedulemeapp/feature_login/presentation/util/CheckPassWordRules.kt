@@ -3,7 +3,7 @@ package com.vdevtor.schedulemeapp.feature_login.presentation.util
 import java.util.regex.Pattern
 
 
-fun isPassWordStrongEnough(password: String): Boolean {
+fun String.isPassWordStrongEnough(): Boolean {
     val passwordREGEX = Pattern.compile(
         "ˆ" +
                 ".{8,}" +
@@ -12,5 +12,5 @@ fun isPassWordStrongEnough(password: String): Boolean {
                 "(?=\\S+$)" +
                 "$"
     )
-    return passwordREGEX.matcher(password).matches()
+    return passwordREGEX.matcher(this).matches()
 }

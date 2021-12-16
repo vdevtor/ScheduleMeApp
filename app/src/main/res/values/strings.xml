@@ -5,4 +5,7 @@
     <string name="anonymously_logout_error">It wasn\'t possible to logout</string>
     <string name="anonymously_login_error">It wasn\'t possible to login</string>
     <string name="anonymously_login_success">It wasn\'t possible to complete the login</string>
+    <string name="invalid_password">Invalid password, make sure to match all the conditions</string>
+    <string name="invalid_email">Invalid e-mail, make sure to match all the conditions</string>
+    <string name="email_password_error">It wasn\t possible to register your account</string>
 </resources>

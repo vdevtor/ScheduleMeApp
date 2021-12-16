@@ -5,6 +5,8 @@ import com.google.firebase.auth.FirebaseAuth
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.core.Resource
 import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthRepository
+import com.vdevtor.schedulemeapp.feature_login.presentation.util.isEmailValid
+import com.vdevtor.schedulemeapp.feature_login.presentation.util.isPassWordStrongEnough
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -33,8 +35,23 @@ class AuthRepositoryImp(
         }
     }
 
-    override suspend fun firebaseSignInWithCredentials(): Flow<Resource<Boolean>> {
-        TODO("Not yet implemented")
+    override suspend fun firebaseSignInWithCredentials(
+        email: String,
+        password: String
+    ): Flow<Resource<Boolean>> = flow {
+        emit(Resource.Loading())
+        if (password.isPassWordStrongEnough()) {
+            if (email.isEmailValid()) {
+                val result = auth.createUserWithEmailAndPassword(email, password)
+                when (result.isSuccessful) {
+                    true -> {
+                        emit(Resource.Success(true))
+                    }
+                    false -> {
+                        emit(Resource.Error<Boolean>(context.getString(R.string.email_password_error)))
+                    }
+                }
+            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_email)))
+        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_password)))
     }
-
 }

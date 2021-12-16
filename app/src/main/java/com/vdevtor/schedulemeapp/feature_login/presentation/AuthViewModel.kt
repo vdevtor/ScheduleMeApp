@@ -48,6 +48,42 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
         }
     }
 
+    fun loginWithEmailPassword(email: String, password: String) {
+        loginJob?.cancel()
+        loginJob = viewModelScope.launch {
+            authUseCases.registerAccountWithCredentials(email, password).onEach { resource ->
+                when (resource) {
+                    is Resource.Loading -> {
+                        _state.value = AuthStateInfo.Loading
+                    }
+                    is Resource.PasswordError -> {
+                        _eventFlow.emit(
+                            UiEvent.PasswordError
+                        )
+                    }
+
+                    is Resource.EmailError -> {
+                        _eventFlow.emit(
+                            UiEvent.EmailError
+                        )
+                    }
+                    is Resource.Error -> {
+                        _eventFlow.emit(
+                            UiEvent.ShowSnackbar(
+                                message = resource.message ?: "Unknown Error"
+                            )
+                        )
+                    }
+
+                    is Resource.Success -> {
+                        _state.value = AuthStateInfo.Success
+                    }
+                }
+            }
+        }
+    }
+
+
     fun logoutAnonymously() {
         viewModelScope.launch {
             authManager.signOutAnonymously().onEach {
@@ -69,5 +105,8 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
+        object PasswordError : UiEvent()
+        object EmailError : UiEvent()
     }
+
 }
