@@ -29,15 +29,12 @@ class AuthRepositoryImp(
             val result = auth.signInAnonymously()
             if (result.await().user != null) {
                 emit(Resource.Success(true))
-                Log.d("caju", "firebaseSignInAnonymously: successo")
             } else {
-                Log.d("caju", "firebaseSignInAnonymously: ${result.exception?.message}")
-                emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_logout_error)))
+                emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_login_error)))
             }
 
         } catch (e: Exception) {
-            Log.d("caju", "firebaseSignInAnonymously: ${e.message}")
-            emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_logout_error)))
+            emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_login_error)))
         }
     }
 

@@ -2,14 +2,15 @@ package com.vdevtor.schedulemeapp.presentation.feature_login.login
 
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.schedulemeapp.core.BaseFragment
 import com.vdevtor.schedulemeapp.databinding.FragmentLoginBinding
 import com.vdevtor.schedulemeapp.presentation.feature_login.AuthStateInfo
 import com.vdevtor.schedulemeapp.presentation.feature_login.AuthViewModel
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
@@ -18,6 +19,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loginAnonymously()
+        uiEvents()
     }
 
     private fun loginAnonymously() {
@@ -35,13 +37,24 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                         binding.progressBar.visibility = View.GONE
                     }
                     is AuthStateInfo.AuthError -> {
-                        Toast.makeText(requireContext(), "DEU RUIM", Toast.LENGTH_SHORT).show()
                         binding.progressBar.visibility = View.GONE
                     }
                     is AuthStateInfo.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                     }
                     else -> Unit
+                }
+            }
+        }
+    }
+
+    private fun uiEvents(){
+        requireActivity().lifecycleScope.launchWhenStarted {
+            authViewModel.eventFlow.collectLatest { event ->
+                when(event){
+                    is AuthViewModel.UiEvent.ShowSnackbar ->{
+                        Snackbar.make(binding.root,event.message,Snackbar.LENGTH_LONG).show()
+                    }
                 }
             }
         }

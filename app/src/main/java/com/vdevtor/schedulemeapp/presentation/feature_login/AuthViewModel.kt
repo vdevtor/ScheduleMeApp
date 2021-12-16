@@ -4,10 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.schedulemeapp.core.Resource
 import com.vdevtor.schedulemeapp.domain.use_case.auth.AuthUseCases
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
 class AuthViewModel(private val authUseCases: AuthUseCases) : ViewModel() {
@@ -15,6 +12,9 @@ class AuthViewModel(private val authUseCases: AuthUseCases) : ViewModel() {
     private val _state = MutableStateFlow<AuthStateInfo>(AuthStateInfo.Default)
     val state: StateFlow<AuthStateInfo>
     get() = _state
+
+    private val _eventFlow = MutableSharedFlow<UiEvent>()
+    val eventFlow = _eventFlow.asSharedFlow()
 
 
     fun loginAnonymously(){
@@ -25,7 +25,12 @@ class AuthViewModel(private val authUseCases: AuthUseCases) : ViewModel() {
                         _state.value = AuthStateInfo.Loading
                     }
                     is Resource.Error -> {
-                        _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
+                        _state.value = AuthStateInfo.AuthError(resource.message?: "Unknown Error")
+                       _eventFlow.emit(
+                           UiEvent.ShowSnackbar(
+                               message = resource.message ?: "Unknown Error"
+                           )
+                       )
                     }
 
                     is Resource.Success ->{
@@ -42,5 +47,10 @@ class AuthViewModel(private val authUseCases: AuthUseCases) : ViewModel() {
 
             }.launchIn(this)
         }
+    }
+
+
+    sealed class UiEvent {
+        data class ShowSnackbar(val message: String) : UiEvent()
     }
 }
