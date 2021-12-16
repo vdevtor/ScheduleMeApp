@@ -25,7 +25,7 @@ class AuthManager(private val auth: FirebaseAuth, private val context: Context) 
 
     suspend fun signOutAnonymously(): Flow<Resource<Boolean>> = flow {
         try {
-            emit(Resource.Loading<Boolean>())
+            emit(Resource.Loading())
             auth.currentUser?.apply {
                 delete().await()
                 if (auth.currentUser != null)

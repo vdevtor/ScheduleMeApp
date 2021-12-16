@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.feature_login.LoginActivity">
+    tools:context=".feature_login.presentation.LoginActivity">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/navHostLoginFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

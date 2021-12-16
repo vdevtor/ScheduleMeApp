@@ -1,7 +1,7 @@
-package com.vdevtor.schedulemeapp.domain.use_case.auth
+package com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth
 
 import com.vdevtor.schedulemeapp.core.Resource
-import com.vdevtor.schedulemeapp.domain.repository.AuthRepository
+import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthRepository
 import kotlinx.coroutines.flow.Flow
 
 class LoginAnonymously(private val repository: AuthRepository) {

@@ -41,7 +41,7 @@ android {
 def koin_version = "3.1.4"
 def nav_version = "2.3.5"
 def firebase_bom = "29.0.2"
-def room = "2.3.0"
+def room = "2.4.0"
 def coroutines = "1.5.2"
 def coroutines_lifeScopes = "2.4.0"
 dependencies {
@@ -70,6 +70,7 @@ dependencies {
     //navigation
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
+    implementation "androidx.fragment:fragment-ktx:1.4.0"
 
 
     // Coroutines
@@ -91,6 +92,7 @@ dependencies {
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom")
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
+
 
 
 }

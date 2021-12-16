@@ -1,6 +1,6 @@
-package com.vdevtor.schedulemeapp.di
+package com.vdevtor.schedulemeapp.feature_login.di
 
-import com.vdevtor.schedulemeapp.presentation.feature_login.AuthViewModel
+import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 

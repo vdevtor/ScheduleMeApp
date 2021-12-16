@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.domain.repository
+package com.vdevtor.schedulemeapp.feature_login.domain.repository
 
 import com.vdevtor.schedulemeapp.core.Resource
 import kotlinx.coroutines.flow.Flow

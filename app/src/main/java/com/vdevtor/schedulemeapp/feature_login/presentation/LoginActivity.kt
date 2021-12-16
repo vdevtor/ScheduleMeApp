@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.presentation.feature_login
+package com.vdevtor.schedulemeapp.feature_login.presentation
 
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.core.BaseActivity

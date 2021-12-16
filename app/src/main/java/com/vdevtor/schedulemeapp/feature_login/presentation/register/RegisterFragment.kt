@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.presentation.feature_login.register
+package com.vdevtor.schedulemeapp.feature_login.presentation.register
 
 import android.os.Bundle
 import android.view.View
@@ -6,8 +6,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.vdevtor.schedulemeapp.core.BaseFragment
 import com.vdevtor.schedulemeapp.databinding.FragmentRegisterBinding
-import com.vdevtor.schedulemeapp.presentation.feature_login.AuthStateInfo
-import com.vdevtor.schedulemeapp.presentation.feature_login.AuthViewModel
+import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
+import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch

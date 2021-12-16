@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.findNavController
 import androidx.viewbinding.ViewBinding
 
@@ -19,6 +20,6 @@ abstract class BaseActivity<VB : ViewBinding>(
         super.onCreate(savedInstanceState)
         binding = bindFactory(layoutInflater)
         setContentView(binding.root)
-        navController = findNavController(navHost())
+        navController = NavHostController(this)
     }
 }

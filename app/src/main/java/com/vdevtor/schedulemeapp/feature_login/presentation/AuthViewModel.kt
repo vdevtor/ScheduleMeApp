@@ -1,10 +1,10 @@
-package com.vdevtor.schedulemeapp.presentation.feature_login
+package com.vdevtor.schedulemeapp.feature_login.presentation
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.schedulemeapp.core.AuthManager
 import com.vdevtor.schedulemeapp.core.Resource
-import com.vdevtor.schedulemeapp.domain.use_case.auth.AuthUseCases
+import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*

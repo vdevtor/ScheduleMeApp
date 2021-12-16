@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.presentation.feature_login.login
+package com.vdevtor.schedulemeapp.feature_login.presentation.login
 
 import android.os.Bundle
 import android.view.View
@@ -7,8 +7,8 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.schedulemeapp.core.BaseFragment
 import com.vdevtor.schedulemeapp.databinding.FragmentLoginBinding
-import com.vdevtor.schedulemeapp.presentation.feature_login.AuthStateInfo
-import com.vdevtor.schedulemeapp.presentation.feature_login.AuthViewModel
+import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
+import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 

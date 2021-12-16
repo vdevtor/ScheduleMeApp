@@ -1,11 +1,11 @@
-package com.vdevtor.schedulemeapp.di
+package com.vdevtor.schedulemeapp.feature_login.di
 
 import com.google.firebase.auth.FirebaseAuth
-import com.vdevtor.schedulemeapp.data.repository.AuthRepositoryImp
-import com.vdevtor.schedulemeapp.domain.repository.AuthRepository
-import com.vdevtor.schedulemeapp.domain.use_case.auth.AuthUseCases
+import com.vdevtor.schedulemeapp.feature_login.data.repository.AuthRepositoryImp
+import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthRepository
+import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
 import com.vdevtor.schedulemeapp.core.AuthManager
-import com.vdevtor.schedulemeapp.domain.use_case.auth.LoginAnonymously
+import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.LoginAnonymously
 import org.koin.dsl.module
 
 val scheduleMeModules = module {
