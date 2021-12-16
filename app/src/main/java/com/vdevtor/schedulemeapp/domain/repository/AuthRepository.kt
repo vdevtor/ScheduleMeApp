@@ -9,7 +9,5 @@ interface AuthRepository {
 
     suspend fun firebaseSignInAnonymously(): Flow<Resource<Boolean>>
 
-    suspend fun signOutAnonymously(): Flow<Resource<Boolean>>
-
-    fun getFirebaseAuthState(): Flow<Boolean>
+    suspend fun firebaseSignInWithCredentials() : Flow<Resource<Boolean>>
 }

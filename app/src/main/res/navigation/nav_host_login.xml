@@ -11,8 +11,10 @@
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
-            android:id="@+id/action_loginFragment_to_registerFragment"
+            android:id="@+id/action_LoginToRegister"
             app:destination="@id/registerFragment"
+            app:popUpTo="@id/nav_host_login"
+            app:popUpToInclusive="true"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@animator/nav_default_exit_anim" />
     </fragment>
@@ -20,5 +22,9 @@
         android:id="@+id/registerFragment"
         android:name="com.vdevtor.schedulemeapp.presentation.feature_login.register.RegisterFragment"
         android:label="fragment_register"
-        tools:layout="@layout/fragment_register" />
+        tools:layout="@layout/fragment_register" >
+        <action
+            android:id="@+id/action_registerToLogin"
+            app:destination="@id/loginFragment" />
+    </fragment>
 </navigation>

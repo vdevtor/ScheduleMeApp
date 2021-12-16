@@ -9,13 +9,12 @@ import com.vdevtor.schedulemeapp.core.BaseFragment
 import com.vdevtor.schedulemeapp.databinding.FragmentLoginBinding
 import com.vdevtor.schedulemeapp.presentation.feature_login.AuthStateInfo
 import com.vdevtor.schedulemeapp.presentation.feature_login.AuthViewModel
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
 class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::inflate) {
 
-    private val authViewModel: AuthViewModel by viewModel()
+    private val authViewModel: AuthViewModel by sharedViewModel()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         loginAnonymously()
@@ -26,14 +25,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         binding.btn.setOnClickListener {
             authViewModel.loginAnonymously()
         }
-        requireActivity().lifecycleScope.launchWhenStarted {
-            authViewModel.state.collect { state ->
+        lifecycleScope.launchWhenStarted {
+            authViewModel.state.collectLatest { state ->
                 when (state) {
                     is AuthStateInfo.Success -> {
-                        findNavController().navigate(
-                            LoginFragmentDirections
-                                .actionLoginFragmentToRegisterFragment().actionId
-                        )
+                        findNavController().navigate(LoginFragmentDirections.actionLoginToRegister().actionId)
                         binding.progressBar.visibility = View.GONE
                     }
                     is AuthStateInfo.AuthError -> {
@@ -48,12 +44,12 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         }
     }
 
-    private fun uiEvents(){
+    private fun uiEvents() {
         requireActivity().lifecycleScope.launchWhenStarted {
             authViewModel.eventFlow.collectLatest { event ->
-                when(event){
-                    is AuthViewModel.UiEvent.ShowSnackbar ->{
-                        Snackbar.make(binding.root,event.message,Snackbar.LENGTH_LONG).show()
+                when (event) {
+                    is AuthViewModel.UiEvent.ShowSnackbar -> {
+                        Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
                     }
                 }
             }
