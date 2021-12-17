@@ -12,7 +12,7 @@ import kotlinx.coroutines.tasks.await
 
 class AuthManager(private val auth: FirebaseAuth, private val context: Context) {
     @ExperimentalCoroutinesApi
-     fun getFirebaseAuthState() = callbackFlow {
+    fun getFirebaseAuthState() = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { auth ->
             trySend(auth.currentUser)
         }
@@ -31,6 +31,21 @@ class AuthManager(private val auth: FirebaseAuth, private val context: Context) 
                 if (auth.currentUser != null)
                     emit(Resource.Success(true))
             }
+        } catch (e: Exception) {
+            emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_logout_error)))
+        }
+    }
+
+    suspend fun signOutEmailPassword(): Flow<Resource<Boolean>> = flow {
+        try {
+            emit(Resource.Loading<Boolean>())
+            auth.currentUser?.let {
+                auth.signOut()
+                kotlinx.coroutines.delay(2000)
+                if (auth.currentUser == null) emit(Resource.Success(true))
+                else emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_logout_error)))
+            }
+
         } catch (e: Exception) {
             emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_logout_error)))
         }

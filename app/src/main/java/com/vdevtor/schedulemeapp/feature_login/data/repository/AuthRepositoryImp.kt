@@ -43,12 +43,19 @@ class AuthRepositoryImp(
         if (password.isPassWordStrongEnough()) {
             if (email.isEmailValid()) {
                 val result = auth.createUserWithEmailAndPassword(email, password)
+                kotlinx.coroutines.delay(2000)
                 when (result.isSuccessful) {
                     true -> {
                         emit(Resource.Success(true))
                     }
                     false -> {
-                        emit(Resource.Error<Boolean>(context.getString(R.string.email_password_error)))
+                        emit(
+                            Resource.Error<Boolean>(
+                                result.exception?.message ?: context.getString(
+                                    R.string.email_password_error
+                                )
+                            )
+                        )
                     }
                 }
             } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_email)))

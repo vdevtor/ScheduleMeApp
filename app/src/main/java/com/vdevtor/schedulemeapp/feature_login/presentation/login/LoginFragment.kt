@@ -17,14 +17,15 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private val authViewModel: AuthViewModel by sharedViewModel()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        loginAnonymously()
+      //  loginAnonymously()
         uiEvents()
+        binding.btn.setOnClickListener {
+            findNavController().navigate(LoginFragmentDirections.actionLoginToRegister().actionId)
+        }
     }
 
     private fun loginAnonymously() {
-        binding.btn.setOnClickListener {
-            authViewModel.loginAnonymously()
-        }
+
         lifecycleScope.launchWhenStarted {
             authViewModel.state.collectLatest { state ->
                 when (state) {
@@ -45,12 +46,13 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     }
 
     private fun uiEvents() {
-        requireActivity().lifecycleScope.launchWhenStarted {
+        lifecycleScope.launchWhenStarted {
             authViewModel.eventFlow.collectLatest { event ->
                 when (event) {
                     is AuthViewModel.UiEvent.ShowSnackbar -> {
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
                     }
+
                 }
             }
         }

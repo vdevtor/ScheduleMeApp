@@ -13,7 +13,7 @@ import kotlinx.coroutines.launch
 class AuthViewModel(private val authUseCases: AuthUseCases, private val authManager: AuthManager) :
     ViewModel() {
 
-    private val _state = MutableStateFlow<AuthStateInfo>(AuthStateInfo.LoggedOut)
+    private val _state = MutableStateFlow<AuthStateInfo>(AuthStateInfo.None)
     val state: StateFlow<AuthStateInfo>
         get() = _state
 
@@ -43,6 +43,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                     is Resource.Success -> {
                         _state.value = AuthStateInfo.Success
                     }
+                    else -> Unit
                 }
             }.launchIn(this)
         }
@@ -79,7 +80,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                         _state.value = AuthStateInfo.Success
                     }
                 }
-            }
+            }.launchIn(this)
         }
     }
 
@@ -92,11 +93,19 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
         }
     }
 
+    fun logoutEmailPassword(){
+        viewModelScope.launch {
+            authManager.signOutEmailPassword().onEach {
+
+            }.launchIn(this)
+        }
+    }
+
     @ExperimentalCoroutinesApi
     fun onAuthStateChange() {
         viewModelScope.launch {
             authManager.getFirebaseAuthState().mapLatest {
-                if (it == null) {
+                if (it == null && _state.value != AuthStateInfo.None) {
                     _state.value = AuthStateInfo.LoggedOut
                 }
             }.launchIn(this)
