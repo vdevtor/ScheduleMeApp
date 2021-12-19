@@ -14,7 +14,8 @@
         android:theme="@style/Theme.ScheduleMeApp">
         <activity
             android:name="com.vdevtor.schedulemeapp.feature_login.presentation.LoginActivity"
-            android:exported="true">
+            android:exported="true"
+            android:configChanges="uiMode">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

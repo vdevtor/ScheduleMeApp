@@ -84,15 +84,20 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
         }
     }
 
-    fun loginWithGoogle(result: ActivityResult){
+    fun loginWithGoogle(result: ActivityResult) {
         viewModelScope.launch {
             authUseCases.loginWithGoogle(result).onEach { resource ->
-                when(resource){
-                    is Resource.Success ->{
+                when (resource) {
+                    is Resource.Success -> {
                         _state.value = AuthStateInfo.SuccessLoginWithGoogle()
                     }
-                    is Resource.Error ->{
+                    is Resource.Error -> {
                         _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
+                        _eventFlow.emit(
+                            UiEvent.ShowSnackbar(
+                                message = resource.message ?: "Unknown Error"
+                            )
+                        )
                     }
                     else -> Unit
                 }
@@ -100,11 +105,11 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
         }
     }
 
-    fun buildGoogleClient(){
+    fun buildGoogleClient() {
         viewModelScope.launch {
             authUseCases.buildGoogleClient().onEach { resource ->
-                when(resource){
-                    is Resource.Success->{
+                when (resource) {
+                    is Resource.Success -> {
                         _state.value = AuthStateInfo.SuccessBuildGoogleClient(resource.data)
                     }
                     else -> Unit
@@ -112,7 +117,6 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
             }.launchIn(this)
         }
     }
-
 
 
     fun logoutAnonymously() {
