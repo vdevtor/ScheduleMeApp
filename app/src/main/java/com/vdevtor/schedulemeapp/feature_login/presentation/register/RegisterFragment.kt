@@ -1,9 +1,14 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation.register
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.schedulemeapp.core.BaseFragment
 import com.vdevtor.schedulemeapp.databinding.FragmentRegisterBinding
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
@@ -20,10 +25,11 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.btn2.setOnClickListener {
-            authViewModel.logoutAnonymously()
+            authViewModel.buildGoogleClient()
         }
         listenToChanges()
     }
+
 
     private fun listenToChanges() {
         authViewModel.onAuthStateChange()
@@ -33,11 +39,34 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     is AuthStateInfo.Success -> {
 
                     }
+
+                    is AuthStateInfo.SuccessBuildGoogleClient -> {
+                        val intent = it.data as GoogleSignInClient
+                        resultLauncher.launch(intent.signInIntent)
+                    }
+
+                    is AuthStateInfo.SuccessLoginWithGoogle ->{
+                        Snackbar.make(binding.root,"Deu Certo loguei com google",
+                        Snackbar.LENGTH_SHORT).show()
+                    }
+
                     is AuthStateInfo.LoggedOut -> {
-                        findNavController().navigate(RegisterFragmentDirections.actionRegisterToLogin()) }
+                        findNavController().navigate(RegisterFragmentDirections.actionRegisterToLogin())
+                    }
+                    is AuthStateInfo.AuthError ->{
+                        Snackbar.make(binding.root,it.message,
+                            Snackbar.LENGTH_SHORT).show()
+                    }
                     else -> Unit
                 }
             }
         }
     }
+
+
+    private val resultLauncher: ActivityResultLauncher<Intent> =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            authViewModel.loginWithGoogle(result)
+        }
 }

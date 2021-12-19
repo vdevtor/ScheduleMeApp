@@ -1,5 +1,6 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation
 
+import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.schedulemeapp.core.AuthManager
@@ -82,6 +83,36 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
             }
         }
     }
+
+    fun loginWithGoogle(result: ActivityResult){
+        viewModelScope.launch {
+            authUseCases.loginWithGoogle(result).onEach { resource ->
+                when(resource){
+                    is Resource.Success ->{
+                        _state.value = AuthStateInfo.SuccessLoginWithGoogle()
+                    }
+                    is Resource.Error ->{
+                        _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
+                    }
+                    else -> Unit
+                }
+            }.launchIn(this)
+        }
+    }
+
+    fun buildGoogleClient(){
+        viewModelScope.launch {
+            authUseCases.buildGoogleClient().onEach { resource ->
+                when(resource){
+                    is Resource.Success->{
+                        _state.value = AuthStateInfo.SuccessBuildGoogleClient(resource.data)
+                    }
+                    else -> Unit
+                }
+            }.launchIn(this)
+        }
+    }
+
 
 
     fun logoutAnonymously() {

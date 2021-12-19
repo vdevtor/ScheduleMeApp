@@ -92,6 +92,9 @@ dependencies {
     implementation platform("com.google.firebase:firebase-bom:$firebase_bom")
     implementation 'com.google.firebase:firebase-auth-ktx'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.4.1'
+    implementation 'com.google.android.gms:play-services-auth:20.0.0'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.2'
+
 
 
 
