@@ -24,6 +24,8 @@
         android:label="fragment_register"
         tools:layout="@layout/fragment_register" >
         <action
+            app:popUpToInclusive="true"
+            app:popUpTo="@id/nav_host_login"
             android:id="@+id/action_registerToLogin"
             app:destination="@id/loginFragment" />
     </fragment>

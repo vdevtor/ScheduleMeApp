@@ -44,7 +44,8 @@
           android:background="@drawable/ic_right_arrow"
           android:backgroundTint="@color/primaryPink"
           android:layout_margin="16dp"
-          android:rotation="180"/>
+          android:rotation="180"
+          android:contentDescription="@string/back_arrow" />
 
         <TextView
             android:id="@+id/signUp"
@@ -65,7 +66,7 @@
             android:autofillHints="emailAddress"
             android:textColorHint="@color/hintColor"
             android:background="@drawable/background_edit_text"
-            android:hint="name"
+            android:hint="@string/name"
             android:layout_marginTop="16dp"
             android:imeOptions="actionNext"
             android:inputType="textEmailAddress"
@@ -111,7 +112,7 @@
             android:autofillHints="emailAddress"
             android:textColorHint="@color/hintColor"
             android:background="@drawable/background_edit_text"
-            android:hint="phone number with area code"
+            android:hint="@string/phone_number_with_area_code"
             android:imeOptions="actionDone"
             android:inputType="phone"
             android:minHeight="38dp"
@@ -128,14 +129,14 @@
             app:layout_constraintWidth_percent=".8" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@id/password"
+            android:id="@+id/password"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             app:endIconMode="password_toggle"
             app:boxBackgroundMode="none"
             android:textColorHint="@color/hintColor"
             android:hint="@string/hint_material_by_pass"
-            app:hintTextColor="@color/fui_transparent"
+            app:hintTextColor="@color/hintColor"
             app:hintAnimationEnabled="false"
             app:layout_constraintEnd_toEndOf="@id/phone"
             app:layout_constraintStart_toStartOf="@id/phone"
@@ -143,6 +144,7 @@
             app:layout_constraintWidth_percent=".8">
 
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/passwordEditText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -170,7 +172,7 @@
             app:boxBackgroundMode="none"
             android:textColorHint="@color/hintColor"
             android:hint="@string/hint_material_by_pass"
-            app:hintTextColor="@color/fui_transparent"
+            app:hintTextColor="@color/hintColor"
             app:hintAnimationEnabled="false"
             app:layout_constraintEnd_toEndOf="@id/email"
             app:layout_constraintStart_toStartOf="@id/email"

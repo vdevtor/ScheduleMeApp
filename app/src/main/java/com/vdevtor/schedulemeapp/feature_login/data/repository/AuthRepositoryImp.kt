@@ -35,7 +35,7 @@ class AuthRepositoryImp(
         }
     }
 
-    override suspend fun firebaseSignInWithCredentials(
+    override suspend fun firebaseSignUpWithCredentials(
         email: String,
         password: String
     ): Flow<Resource<Boolean>> = flow {
@@ -46,7 +46,7 @@ class AuthRepositoryImp(
                 kotlinx.coroutines.delay(2000)
                 when (result.isSuccessful) {
                     true -> {
-                        emit(Resource.Success(true))
+                        if (isUserAuthenticatedInFirebase()) emit(Resource.Success(true))
                     }
                     false -> {
                         emit(

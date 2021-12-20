@@ -23,4 +23,7 @@
     <string name="personal">Personal</string>
     <string name="choose_your_account_type">Account type</string>
     <string name="register">Register</string>
+    <string name="name">name</string>
+    <string name="phone_number_with_area_code">phone number with area code</string>
+    <string name="back_arrow">back Arrow</string>
 </resources>

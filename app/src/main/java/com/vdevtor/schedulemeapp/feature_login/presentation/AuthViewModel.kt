@@ -50,7 +50,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
         }
     }
 
-    fun loginWithEmailPassword(email: String, password: String) {
+    fun registerWithCredentials(email: String, password: String) {
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
             authUseCases.registerAccountWithCredentials(email, password).onEach { resource ->

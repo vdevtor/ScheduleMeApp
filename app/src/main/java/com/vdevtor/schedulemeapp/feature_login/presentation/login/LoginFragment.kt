@@ -13,7 +13,7 @@ import com.vdevtor.schedulemeapp.core.BaseFragment
 import com.vdevtor.schedulemeapp.databinding.FragmentLoginBinding
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
-import com.vdevtor.schedulemeapp.feature_login.presentation.util.navigateWithAnimations
+import com.vdevtor.schedulemeapp.feature_login.presentation.util.navigateWithAnimationsPopUp
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.flow.collectLatest
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -30,7 +30,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
     private fun onButtonsClicks() {
         binding.registerButton.setOnClickListener {
-            findNavController().navigateWithAnimations(LoginFragmentDirections.actionLoginToRegister().actionId)
+            findNavController().navigateWithAnimationsPopUp(LoginFragmentDirections.actionLoginToRegister().actionId)
         }
 
         binding.loginButton.setOnClickListener {
@@ -45,6 +45,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
             authViewModel.loginAnonymously()
         }
 
+
+
     }
 
     private fun listenToResponses() {
@@ -54,7 +56,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 when (state) {
                     is AuthStateInfo.Success -> {
                         this.cancel()
-                        findNavController().navigateWithAnimations(LoginFragmentDirections.actionLoginToRegister().actionId)
+                        findNavController().navigate(LoginFragmentDirections.actionLoginToRegister().actionId)
                     }
                     is AuthStateInfo.AuthError -> {
                         binding.progressBar.visibility = View.GONE
@@ -70,7 +72,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
                     is AuthStateInfo.SuccessLoginWithGoogle -> {
                         this.cancel()
-                        findNavController().navigateWithAnimations(LoginFragmentDirections.actionLoginToRegister().actionId)
+                        findNavController().navigateWithAnimationsPopUp(LoginFragmentDirections.actionLoginToRegister().actionId)
                     }
                     else -> Unit
                 }
@@ -92,7 +94,14 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     is AuthViewModel.UiEvent.ShowSnackbar -> {
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
                     }
-                    else -> Unit
+                    is AuthViewModel.UiEvent.EmailError ->{
+
+                    }
+
+                    is AuthViewModel.UiEvent.PasswordError ->{
+
+                    }
+
                 }
             }
         }
