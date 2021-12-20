@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
-class AuthManager(private val auth: FirebaseAuth, private val context: Context) {
+class AuthManager( val auth: FirebaseAuth, private val context: Context) {
     @ExperimentalCoroutinesApi
     fun getFirebaseAuthState() = callbackFlow {
         val authStateListener = FirebaseAuth.AuthStateListener { auth ->
