@@ -40,6 +40,11 @@ class AuthRepositoryImp(
         password: String
     ): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading())
+
+        if (email.isBlank() || password.isBlank()) {
+            emit(Resource.Error(context.getString(R.string.blank_field_error)))
+            return@flow
+        }
         if (password.isPassWordStrongEnough()) {
             if (email.isEmailValid()) {
                 val result = auth.createUserWithEmailAndPassword(email, password)
@@ -53,6 +58,39 @@ class AuthRepositoryImp(
                             Resource.Error<Boolean>(
                                 result.exception?.message ?: context.getString(
                                     R.string.email_password_error
+                                )
+                            )
+                        )
+                    }
+                }
+            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_email)))
+        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_password)))
+    }
+
+    override suspend fun firebaseSignInWithCredentials(
+        email: String,
+        password: String
+    ): Flow<Resource<Boolean>> = flow {
+
+        emit(Resource.Loading<Boolean>())
+
+        if (email.isBlank() || password.isBlank()) {
+            emit(Resource.Error(context.getString(R.string.blank_field_error)))
+            return@flow
+        }
+        if (password.isPassWordStrongEnough() && password.isNotBlank()) {
+            if (email.isEmailValid() && email.isNotBlank()) {
+                val result = auth.signInWithEmailAndPassword(email, password)
+                kotlinx.coroutines.delay(3100)
+                when (result.isSuccessful) {
+                    true -> {
+                        if (isUserAuthenticatedInFirebase()) emit(Resource.Success(true))
+                    }
+                    false -> {
+                        emit(
+                            Resource.Error<Boolean>(
+                                result.exception?.message ?: context.getString(
+                                    R.string.incomplete_login_error
                                 )
                             )
                         )

@@ -50,6 +50,39 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
         }
     }
 
+    fun loginWithEmailPassword(email: String,password: String){
+        loginJob?.cancel()
+        loginJob = viewModelScope.launch {
+            authUseCases.loginWithEmail(email, password).onEach { resource ->
+                when(resource){
+                    is Resource.Loading ->{
+                        _state.value = AuthStateInfo.Loading
+                    }
+                    is Resource.Success ->{
+                        _state.value = AuthStateInfo.Success
+                    }
+                    is Resource.EmailError ->{
+                        _eventFlow.emit(
+                            UiEvent.EmailError(resource.message ?: "Verify your email")
+                        )
+                    }
+                    is Resource.PasswordError ->{
+                        _eventFlow.emit(
+                            UiEvent.PasswordError(resource.message ?: "Verify your password")
+                        )
+                    }
+                    is Resource.Error ->{
+                        _eventFlow.emit(
+                            UiEvent.ShowSnackbar(
+                                message = resource.message ?: "Unknown Error"
+                            )
+                        )
+                    }
+                }
+            }.launchIn(this)
+        }
+    }
+
     fun registerWithCredentials(email: String, password: String) {
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
@@ -60,13 +93,13 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                     }
                     is Resource.PasswordError -> {
                         _eventFlow.emit(
-                            UiEvent.PasswordError
+                            UiEvent.PasswordError(resource.message ?: "Verify your password")
                         )
                     }
 
                     is Resource.EmailError -> {
                         _eventFlow.emit(
-                            UiEvent.EmailError
+                            UiEvent.EmailError(resource.message ?: "Verify your email")
                         )
                     }
                     is Resource.Error -> {
@@ -93,7 +126,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                         _state.value = AuthStateInfo.SuccessLoginWithGoogle()
                     }
                     is Resource.Error -> {
-                        _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
+                       // _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
                                 message = resource.message ?: "Unknown Error"
@@ -149,8 +182,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
-        object PasswordError : UiEvent()
-        object EmailError : UiEvent()
+        data class PasswordError(val message: String) : UiEvent()
+        data class EmailError(val message: String) : UiEvent()
     }
-
 }

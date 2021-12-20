@@ -4,5 +4,6 @@ data class AuthUseCases(
     val loginAnonymously : LoginAnonymously,
     val registerAccountWithCredentials : RegisterWithEmailPassWord,
     val buildGoogleClient: BuildGoogleClient,
-    val loginWithGoogle : LoginWithGoogle
+    val loginWithGoogle : LoginWithGoogle,
+    val loginWithEmail: LoginWithEmail
 )

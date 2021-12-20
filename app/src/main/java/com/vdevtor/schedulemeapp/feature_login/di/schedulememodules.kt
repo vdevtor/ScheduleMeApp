@@ -20,12 +20,14 @@ val scheduleMeModules = module {
     single<AuthGoogleSign> { AuthGoogleSignImp(get(), get()) }
 
     //UseCases
-    factory { AuthUseCases(get(),get(),get(),get()) }
+    factory { AuthUseCases(get(),get(),get(),get(),get()) }
     single { AuthManager(get(), get()) }
     factory { LoginAnonymously(get()) }
     factory { RegisterWithEmailPassWord(get()) }
     factory { LoginWithGoogle(get()) }
     factory { BuildGoogleClient(get()) }
     single { ProvideAccountArray(get()) }
+    factory { LoginWithEmail(get()) }
+
 
 }
