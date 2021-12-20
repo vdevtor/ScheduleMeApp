@@ -9,7 +9,7 @@
     <string name="invalid_email">Invalid e-mail, make sure to match all the conditions</string>
     <string name="email_password_error">It wasn\t possible to register your account</string>
     <string name="error_login_with_google">It wasn\'t possible to connect with your google account</string>
-    <string name="hint_email">E-mail</string>
+    <string name="hint_email">e-mail</string>
     <string name="hint_password">password</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="login_text_view_button">Log In</string>
@@ -17,4 +17,10 @@
     <string name="or">or</string>
     <string name="clock_bg">clock_background</string>
     <string name="skip">skip</string>
+    <string name="hint_material_by_pass"> </string>
+    <string name="confirm_password">confirm password</string>
+    <string name="business">Business</string>
+    <string name="personal">Personal</string>
+    <string name="choose_your_account_type">Account type</string>
+    <string name="register">Register</string>
 </resources>

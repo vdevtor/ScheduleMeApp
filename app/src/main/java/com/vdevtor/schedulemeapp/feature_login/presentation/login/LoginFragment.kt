@@ -44,6 +44,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
         binding.skipButton.setOnClickListener {
             authViewModel.loginAnonymously()
         }
+
     }
 
     private fun listenToResponses() {
