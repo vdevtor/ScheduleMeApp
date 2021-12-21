@@ -29,7 +29,6 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
     private val authViewModel: AuthViewModel by sharedViewModel()
     private val provideAccountArray: ProvideAccountArray by inject()
-    private var count = 0
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         onButtonsClick()
@@ -94,74 +93,22 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             val password = binding.passwordEditText.text.toString()
             val confirmPassword = binding.confirmPasswordET.text.toString()
             val name = binding.name.text.toString()
-            checkNameForm(name)
-            checkEmailForm(email)
-            checkPassWordForm(password,confirmPassword)
-            Log.d("cul", "onButtonsClick: $count")
-            if (count == 3) {
+            authViewModel.validateEmail(email)
+            authViewModel.validateName(name)
+            authViewModel.validatePassword(password, confirmPassword)
+            Log.d("cul", "onButtonsClick: ${authViewModel.count}")
+            if (authViewModel.count == 3) {
                 authViewModel.registerWithCredentials(email, password)
             }
 
         }
     }
 
-    private fun checkEmailForm(email: String) : Boolean{
-        if (email.isNotBlank()) {
-            return if (email.isEmailValid()){
-                count++
-                true
-            }else{
-                count--
-                binding.email.error = getString(R.string.invalid_email)
-                false
-            }
 
-        } else {
-            count--
-            binding.email.error = getString(R.string.invalid_email_blank)
-
-            return false
-        }
-    }
-
-    private fun checkNameForm(name: String): Boolean {
-        return if (name.validateName()) {
-            count++
-            true
-        } else {
-            count--
-            binding.name.error = getString(R.string.enter_your_full_name)
-            false
-        }
-    }
-
-
-    private fun checkPassWordForm(password: String, confirmPassword: String): Boolean {
-         if (password.isPasswordEquals(confirmPassword)) {
-             return if (password.isPassWordStrongEnough()){
-                 count++
-                 true
-             }else{
-                 count--
-                 binding.confirmPassword.isEndIconVisible = false
-                 binding.confirmPasswordET.error = getString(R.string.invalid_password)
-                 observeEditTextPassword()
-                 false
-             }
-
-
-        } else {
-            count--
-            binding.confirmPassword.isEndIconVisible = false
-            binding.confirmPasswordET.error = getString(R.string.invalid_password_must_equal)
-            observeEditTextPassword()
-          return false
-        }
-    }
 
     private fun observeEditTextPassword() {
 
-        binding.passwordEditText.addTextChangedListener(object : TextWatcher{
+        binding.passwordEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
             }
@@ -169,20 +116,60 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.let {
                     if (it.hasOneSpecialChar()) {
-                        binding.special.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.special.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.special.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.special.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                     if (it.hasOneDigit()) {
-                        binding.digit.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.digit.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.digit.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.digit.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                     if (it.hasOneUpLetter()) {
-                        binding.upLetter.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.upLetter.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.upLetter.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.upLetter.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                     if (it.hasSixChar()) {
-                        binding.numberofletters.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.numberofletters.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.numberofletters.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.numberofletters.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                 }
             }
@@ -190,20 +177,60 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             override fun afterTextChanged(s: Editable?) {
                 s?.let {
                     if (it.hasOneSpecialChar()) {
-                        binding.special.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.special.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.special.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.special.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                     if (it.hasOneDigit()) {
-                        binding.digit.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.digit.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.digit.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.digit.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                     if (it.hasOneUpLetter()) {
-                        binding.upLetter.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.upLetter.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.upLetter.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.upLetter.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
 
                     if (it.hasSixChar()) {
-                        binding.numberofletters.setTextColor(ContextCompat.getColor(requireContext(),R.color.green))
-                    }else binding.numberofletters.setTextColor(ContextCompat.getColor(requireContext(),R.color.red))
+                        binding.numberofletters.setTextColor(
+                            ContextCompat.getColor(
+                                requireContext(),
+                                R.color.green
+                            )
+                        )
+                    } else binding.numberofletters.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            R.color.red
+                        )
+                    )
                 }
             }
 
@@ -251,9 +278,33 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     is AuthViewModel.UiEvent.EmailError -> {
                         binding.progressBar.visibility = View.GONE
                         binding.passwordValidationsBox.visibility = View.VISIBLE
-                        binding.email.error = "please,type a valid e-mail"
+                        binding.email.error = getString(R.string.invalid_email)
                         binding.email.setText("")
                     }
+
+                    AuthViewModel.UiEvent.EmailBlank -> {
+                        binding.progressBar.visibility = View.GONE
+                        binding.passwordValidationsBox.visibility = View.VISIBLE
+                        binding.email.error = getString(R.string.invalid_email_blank)
+                        binding.email.setText("")
+                    }
+
+                    is AuthViewModel.UiEvent.NameError -> {
+                        binding.name.error = getString(R.string.enter_your_full_name)
+                    }
+                    is AuthViewModel.UiEvent.PassWordWeak -> {
+
+                        binding.confirmPassword.isEndIconVisible = false
+                        binding.confirmPasswordET.error = getString(R.string.invalid_password)
+                        observeEditTextPassword()
+                    }
+                    is AuthViewModel.UiEvent.PassWordDifferent -> {
+                        binding.confirmPassword.isEndIconVisible = false
+                        binding.confirmPasswordET.error =
+                            getString(R.string.invalid_password_must_equal)
+                        observeEditTextPassword()
+                    }
+
                     is AuthViewModel.UiEvent.ShowSnackbar -> {
                         binding.progressBar.visibility = View.GONE
                         binding.passwordValidationsBox.visibility = View.VISIBLE

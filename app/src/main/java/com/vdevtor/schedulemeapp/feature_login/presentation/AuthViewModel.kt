@@ -5,12 +5,18 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.common.core.Resource
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
+import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.RegisterValidationManager
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class AuthViewModel(private val authUseCases: AuthUseCases) :
+class AuthViewModel(private val authUseCases: AuthUseCases, private  val registerValidationManager: RegisterValidationManager) :
     ViewModel() {
+
+    var successEmail: Boolean = false
+    var successName: Boolean = false
+    var successPassWord: Boolean = false
+    var count = 0
 
     private val _state = MutableStateFlow<AuthStateInfo>(AuthStateInfo.None)
     val state: StateFlow<AuthStateInfo>
@@ -156,9 +162,101 @@ class AuthViewModel(private val authUseCases: AuthUseCases) :
         }
     }
 
+    fun validatePassword(password: String,confirmPassword:String) : Boolean{
+        viewModelScope.launch {
+            registerValidationManager.checkPassWordForm(password,confirmPassword).onEach { resource ->
+                when(resource){
+                    is Resource.Success->{
+                        count++
+                        successPassWord = true
+                    }
+                    is Resource.Error->{
+                        count--
+                        successPassWord = false
+                        resource.message?.let {
+                            if (it.contains("different")){
+                                _eventFlow.emit(
+                                    UiEvent.PassWordDifferent
+                                )
+                            }else{
+                                _eventFlow.emit(
+                                    UiEvent.PassWordWeak
+                                )
+                            }
+                        }
+                    }
+                    else -> Unit
+                }
+            }.launchIn(this)
+        }
+        return successPassWord
+    }
+
+    fun validateName(name:String) :Boolean{
+        viewModelScope.launch {
+            registerValidationManager.checkNameForm(name).onEach{ resource ->
+                when(resource){
+                    is Resource.Success ->{
+                        count++
+                        successName = true
+                    }
+                    is Resource.Error ->{
+                        count--
+                        successName= false
+                        resource.message?.let {
+                           _eventFlow.emit(
+                               UiEvent.NameError
+                           )
+                        }
+                    }
+                    else -> Unit
+                }
+
+            }.launchIn(this)
+        }
+        return successName
+    }
+
+    fun validateEmail(email : String) : Boolean{
+        viewModelScope.launch {
+            registerValidationManager.checkEmailForm(email).onEach{ resource ->
+                when(resource){
+                    is Resource.Success ->{
+                        count++
+                        successEmail = true
+                    }
+                    is Resource.Error ->{
+                        count--
+                        successEmail = false
+                        resource.message?.let {
+                            if (it.contains("blank")){
+                                _eventFlow.emit(
+                                    UiEvent.EmailBlank
+                                )
+                            }else{
+                                _eventFlow.emit(
+                                    UiEvent.EmailError(
+                                        it
+                                    )
+                                )
+                            }
+                        }
+                    }
+                    else -> Unit
+                }
+
+            }.launchIn(this)
+        }
+       return successEmail
+    }
+
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
         data class PasswordError(val message: String) : UiEvent()
         data class EmailError(val message: String) : UiEvent()
+        object EmailBlank : UiEvent()
+        object PassWordDifferent : UiEvent()
+        object PassWordWeak: UiEvent()
+        object NameError : UiEvent()
     }
 }

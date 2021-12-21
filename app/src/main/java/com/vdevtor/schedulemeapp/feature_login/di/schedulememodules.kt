@@ -28,6 +28,7 @@ val scheduleMeModules = module {
     factory { BuildGoogleClient(get()) }
     single { ProvideAccountArray(get()) }
     factory { LoginWithEmail(get()) }
+    factory { RegisterValidationManager() }
 
 
 }
