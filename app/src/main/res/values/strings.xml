@@ -34,4 +34,9 @@
     <string name="invalid_password_must_equal">make sure to set the same password</string>
     <string name="invalid_phone_number">Invalid phone number</string>
     <string name="enter_your_full_name">Enter your full name</string>
+    <string name="your_password_must_have">Your password must have:</string>
+    <string name="_6_characters">- 6 characters</string>
+    <string name="_1_digit">- 1 digit</string>
+    <string name="_1_special_character">- 1 special character</string>
+    <string name="_1_upper_letter">- 1 upper letter</string>
 </resources>
