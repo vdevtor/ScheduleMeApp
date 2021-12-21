@@ -74,6 +74,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     is AuthStateInfo.SuccessBuildGoogleClient -> {
                         val intent = state.data as GoogleSignInClient
                         resultLauncher.launch(intent.signInIntent)
+                        authViewModel.clearState()
                     }
 
                     is AuthStateInfo.SuccessLoginWithGoogle -> {
