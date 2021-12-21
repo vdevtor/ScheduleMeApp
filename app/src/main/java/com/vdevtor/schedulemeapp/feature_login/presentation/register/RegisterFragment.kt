@@ -63,6 +63,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     is AuthStateInfo.Success -> {
                         binding.progressBar.visibility = View.GONE
                         Toast.makeText(requireContext(), "me conectei", Toast.LENGTH_SHORT).show()
+                        authViewModel.clearState()
                     }
 
                     is AuthStateInfo.Loading -> {
@@ -76,6 +77,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         binding.progressBar.visibility = View.GONE
                         binding.passwordValidationsBox.visibility = View.VISIBLE
                         binding.registerButton.visibility = View.VISIBLE
+                        authViewModel.clearState()
                     }
                     else -> Unit
                 }
@@ -97,10 +99,10 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             authViewModel.validateName(name)
             authViewModel.validatePassword(password, confirmPassword)
             Log.d("cul", "onButtonsClick: ${authViewModel.count}")
-            if (authViewModel.count == 3) {
+            if (authViewModel.count >= 3) {
+                authViewModel.count = 0
                 authViewModel.registerWithCredentials(email, password)
             }
-
         }
     }
 

@@ -61,9 +61,11 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                     is AuthStateInfo.Success -> {
                         this.cancel()
                         findNavController().navigateWithAnimationsPopUp(LoginFragmentDirections.actionLoginToRegister().actionId)
+                        authViewModel.clearState()
                     }
                     is AuthStateInfo.AuthError -> {
                         binding.progressBar.visibility = View.GONE
+                        authViewModel.clearState()
                     }
                     is AuthStateInfo.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE

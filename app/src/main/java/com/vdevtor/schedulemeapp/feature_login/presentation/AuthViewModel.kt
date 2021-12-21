@@ -167,11 +167,11 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
             registerValidationManager.checkPassWordForm(password,confirmPassword).onEach { resource ->
                 when(resource){
                     is Resource.Success->{
-                        count++
+                        ++count
                         successPassWord = true
                     }
                     is Resource.Error->{
-                        count--
+                        --count
                         successPassWord = false
                         resource.message?.let {
                             if (it.contains("different")){
@@ -197,11 +197,11 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
             registerValidationManager.checkNameForm(name).onEach{ resource ->
                 when(resource){
                     is Resource.Success ->{
-                        count++
+                        ++count
                         successName = true
                     }
                     is Resource.Error ->{
-                        count--
+                        --count
                         successName= false
                         resource.message?.let {
                            _eventFlow.emit(
@@ -222,11 +222,11 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
             registerValidationManager.checkEmailForm(email).onEach{ resource ->
                 when(resource){
                     is Resource.Success ->{
-                        count++
+                        ++count
                         successEmail = true
                     }
                     is Resource.Error ->{
-                        count--
+                        --count
                         successEmail = false
                         resource.message?.let {
                             if (it.contains("blank")){
@@ -248,6 +248,10 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
             }.launchIn(this)
         }
        return successEmail
+    }
+
+    fun clearState(){
+        _state.value = AuthStateInfo.None
     }
 
     sealed class UiEvent {
