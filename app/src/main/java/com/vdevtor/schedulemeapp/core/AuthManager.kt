@@ -2,6 +2,7 @@ package com.vdevtor.schedulemeapp.core
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
+import com.vdevtor.common.core.Resource
 import com.vdevtor.schedulemeapp.R
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.awaitClose

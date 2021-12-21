@@ -3,15 +3,13 @@ package com.vdevtor.schedulemeapp.feature_login.presentation
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vdevtor.schedulemeapp.core.AuthManager
-import com.vdevtor.schedulemeapp.core.Resource
+import com.vdevtor.common.core.Resource
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class AuthViewModel(private val authUseCases: AuthUseCases, private val authManager: AuthManager) :
+class AuthViewModel(private val authUseCases: AuthUseCases) :
     ViewModel() {
 
     private val _state = MutableStateFlow<AuthStateInfo>(AuthStateInfo.None)
@@ -33,7 +31,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                         _state.value = AuthStateInfo.Loading
                     }
                     is Resource.Error -> {
-                        _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
                                 message = resource.message ?: "Unknown Error"
@@ -62,16 +60,19 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                         _state.value = AuthStateInfo.Success
                     }
                     is Resource.EmailError ->{
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.EmailError(resource.message ?: "Verify your email")
                         )
                     }
                     is Resource.PasswordError ->{
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.PasswordError(resource.message ?: "Verify your password")
                         )
                     }
                     is Resource.Error ->{
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
                                 message = resource.message ?: "Unknown Error"
@@ -92,17 +93,20 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                         _state.value = AuthStateInfo.Loading
                     }
                     is Resource.PasswordError -> {
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.PasswordError(resource.message ?: "Verify your password")
                         )
                     }
 
                     is Resource.EmailError -> {
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.EmailError(resource.message ?: "Verify your email")
                         )
                     }
                     is Resource.Error -> {
+                        _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
                                 message = resource.message ?: "Unknown Error"
@@ -147,34 +151,6 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private val authMana
                         _state.value = AuthStateInfo.SuccessBuildGoogleClient(resource.data)
                     }
                     else -> Unit
-                }
-            }.launchIn(this)
-        }
-    }
-
-
-    fun logoutAnonymously() {
-        viewModelScope.launch {
-            authManager.signOutAnonymously().onEach {
-
-            }.launchIn(this)
-        }
-    }
-
-    fun logoutEmailPassword(){
-        viewModelScope.launch {
-            authManager.signOutEmailPassword().onEach {
-
-            }.launchIn(this)
-        }
-    }
-
-    @ExperimentalCoroutinesApi
-    fun onAuthStateChange() {
-        viewModelScope.launch {
-            authManager.getFirebaseAuthState().mapLatest {
-                if (it == null && _state.value != AuthStateInfo.None) {
-                    _state.value = AuthStateInfo.LoggedOut
                 }
             }.launchIn(this)
         }

@@ -2,8 +2,8 @@ package com.vdevtor.schedulemeapp.feature_login.data.repository
 
 import android.content.Context
 import com.google.firebase.auth.FirebaseAuth
+import com.vdevtor.common.core.Resource
 import com.vdevtor.schedulemeapp.R
-import com.vdevtor.schedulemeapp.core.Resource
 import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthRepository
 import com.vdevtor.schedulemeapp.feature_login.presentation.util.isEmailValid
 import com.vdevtor.schedulemeapp.feature_login.presentation.util.isPassWordStrongEnough
@@ -45,8 +45,8 @@ class AuthRepositoryImp(
             emit(Resource.Error(context.getString(R.string.blank_field_error)))
             return@flow
         }
-        if (password.isPassWordStrongEnough()) {
-            if (email.isEmailValid()) {
+        if (email.isEmailValid() && email.isNotBlank()) {
+            if (password.isPassWordStrongEnough() && password.isNotBlank()) {
                 val result = auth.createUserWithEmailAndPassword(email, password)
                 kotlinx.coroutines.delay(2000)
                 when (result.isSuccessful) {
@@ -63,8 +63,8 @@ class AuthRepositoryImp(
                         )
                     }
                 }
-            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_email)))
-        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_password)))
+            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_password)))
+        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_email)))
     }
 
     override suspend fun firebaseSignInWithCredentials(
@@ -78,8 +78,9 @@ class AuthRepositoryImp(
             emit(Resource.Error(context.getString(R.string.blank_field_error)))
             return@flow
         }
-        if (password.isPassWordStrongEnough() && password.isNotBlank()) {
-            if (email.isEmailValid() && email.isNotBlank()) {
+
+        if (email.isEmailValid() && email.isNotBlank()) {
+            if (password.isPassWordStrongEnough() && password.isNotBlank()) {
                 val result = auth.signInWithEmailAndPassword(email, password)
                 kotlinx.coroutines.delay(3100)
                 when (result.isSuccessful) {
@@ -96,7 +97,7 @@ class AuthRepositoryImp(
                         )
                     }
                 }
-            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_email)))
-        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_password)))
+            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_password)))
+        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_email)))
     }
 }

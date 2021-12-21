@@ -1,7 +1,7 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation
 
+import com.vdevtor.common.core.BaseActivity
 import com.vdevtor.schedulemeapp.R
-import com.vdevtor.schedulemeapp.core.BaseActivity
 import com.vdevtor.schedulemeapp.databinding.ActivityLoginBinding
 
 class LoginActivity : BaseActivity<ActivityLoginBinding>(

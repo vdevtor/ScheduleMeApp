@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.core
+package com.vdevtor.common.core
 
 import android.os.Bundle
 import android.view.LayoutInflater

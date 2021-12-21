@@ -1,6 +1,6 @@
 package com.vdevtor.schedulemeapp.feature_login.domain.repository
 
-import com.vdevtor.schedulemeapp.core.Resource
+import com.vdevtor.common.core.Resource
 import kotlinx.coroutines.flow.Flow
 
 interface AuthRepository {

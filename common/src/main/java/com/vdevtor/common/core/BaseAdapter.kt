@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.core
+package com.vdevtor.common.core
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView

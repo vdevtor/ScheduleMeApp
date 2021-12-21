@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.data.model
+package com.vdevtor.common.data.model
 
 data class AppUserModelDto(
     val name : String,

@@ -10,8 +10,8 @@ import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
+import com.vdevtor.common.core.Resource
 import com.vdevtor.schedulemeapp.R
-import com.vdevtor.schedulemeapp.core.Resource
 import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthGoogleSign
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
