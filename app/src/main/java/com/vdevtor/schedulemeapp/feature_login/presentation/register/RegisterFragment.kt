@@ -5,7 +5,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.AdapterView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -36,20 +35,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         applyMask()
         binding.spinner.adapter =
             AccountTypeAdapter(requireContext(), R.layout.account_type_item, provideAccountArray())
-        binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-
-            }
-
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-
-            }
-        }
 
         listenToChanges()
         uiEventListener()
@@ -105,7 +90,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             }
         }
     }
-
 
 
     private fun observeEditTextPassword() {
@@ -172,74 +156,13 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                             R.color.red
                         )
                     )
-
                 }
             }
 
             override fun afterTextChanged(s: Editable?) {
-                s?.let {
-                    if (it.hasOneSpecialChar()) {
-                        binding.special.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.green
-                            )
-                        )
-                    } else binding.special.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red
-                        )
-                    )
-
-                    if (it.hasOneDigit()) {
-                        binding.digit.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.green
-                            )
-                        )
-                    } else binding.digit.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red
-                        )
-                    )
-
-                    if (it.hasOneUpLetter()) {
-                        binding.upLetter.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.green
-                            )
-                        )
-                    } else binding.upLetter.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red
-                        )
-                    )
-
-                    if (it.hasSixChar()) {
-                        binding.numberofletters.setTextColor(
-                            ContextCompat.getColor(
-                                requireContext(),
-                                R.color.green
-                            )
-                        )
-                    } else binding.numberofletters.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            R.color.red
-                        )
-                    )
-                }
             }
 
         })
-
-
-
 
         binding.confirmPasswordET.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
@@ -318,5 +241,4 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             }
         }
     }
-
 }
