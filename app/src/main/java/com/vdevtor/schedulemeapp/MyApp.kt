@@ -1,8 +1,8 @@
 package com.vdevtor.schedulemeapp
 
 import android.app.Application
-import com.vdevtor.schedulemeapp.feature_login.di.scheduleMeModules
-import com.vdevtor.schedulemeapp.feature_login.di.viewModelModules
+import com.vdevtor.schedulemeapp.di.scheduleMeModules
+import com.vdevtor.schedulemeapp.di.viewModelModules
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin

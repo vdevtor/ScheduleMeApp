@@ -6,6 +6,7 @@ import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.common.core.Resource
+import com.vdevtor.common.data.model.AppUserModelDto
 import com.vdevtor.common.utils.saveProfilePictureInternally
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.RegisterValidationManager
@@ -93,10 +94,10 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         }
     }
 
-    fun registerWithCredentials(email: String, password: String) {
+    fun registerWithCredentials(userInfo: AppUserModelDto, password: String,uploadProfilePic : Boolean = false) {
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
-            authUseCases.registerAccountWithCredentials(email, password).onEach { resource ->
+            authUseCases.registerAccountWithCredentials(userInfo, password).onEach { resource ->
                 when (resource) {
                     is Resource.Loading -> {
                         _state.value = AuthStateInfo.Loading
@@ -124,11 +125,16 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
                     }
 
                     is Resource.Success -> {
+                        if (uploadProfilePic) uploadPhotoToFireBase() else
                         _state.value = AuthStateInfo.Success
                     }
                 }
             }.launchIn(this)
         }
+    }
+
+    private fun uploadPhotoToFireBase() {
+
     }
 
     fun loginWithGoogle(result: ActivityResult) {

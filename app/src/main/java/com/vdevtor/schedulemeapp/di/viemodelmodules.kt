@@ -1,4 +1,4 @@
-package com.vdevtor.schedulemeapp.feature_login.di
+package com.vdevtor.schedulemeapp.di
 
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
 import org.koin.androidx.viewmodel.dsl.viewModel

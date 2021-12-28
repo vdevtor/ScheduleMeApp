@@ -1,6 +1,7 @@
-package com.vdevtor.schedulemeapp.feature_login.di
+package com.vdevtor.schedulemeapp.di
 
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.vdevtor.schedulemeapp.core.AuthManager
 import com.vdevtor.schedulemeapp.feature_login.data.repository.AuthGoogleSignImp
 import com.vdevtor.schedulemeapp.feature_login.data.repository.AuthRepositoryImp
@@ -16,7 +17,8 @@ import org.koin.dsl.module
 val scheduleMeModules = module {
     //Repositories
     single { FirebaseAuth.getInstance() }
-    single<AuthRepository> { AuthRepositoryImp(get(), get()) }
+    single { FirebaseFirestore.getInstance() }
+    single<AuthRepository> { AuthRepositoryImp(get(), get(),get()) }
     single<AuthGoogleSign> { AuthGoogleSignImp(get(), get()) }
 
     //UseCases

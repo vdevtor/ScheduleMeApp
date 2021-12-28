@@ -8,7 +8,6 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.annotation.RequiresApi
@@ -17,11 +16,13 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.common.core.BaseFragment
+import com.vdevtor.common.data.model.AppUserModelDto
 import com.vdevtor.common.utils.MaskEditUtil
 import com.vdevtor.common.utils.convertUriToBimap
 import com.vdevtor.common.utils.verifyGalleryPermissions
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.databinding.FragmentRegisterBinding
+import com.vdevtor.schedulemeapp.feature_login.domain.model.InputModel
 import com.vdevtor.schedulemeapp.feature_login.domain.model.ProvideAccountArray
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
@@ -37,9 +38,9 @@ import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
     private val authViewModel: AuthViewModel by sharedViewModel()
     private val provideAccountArray: ProvideAccountArray by inject()
-    private var permissionsHandler : Array<String> = arrayOf()
-    private  var imageUri : Uri? = null
-    private  var imageUriPath  = ""
+    private var permissionsHandler: Array<String> = arrayOf()
+    private var imageUri: Uri? = null
+
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -52,6 +53,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         listenToChanges()
         uiEventListener()
     }
+
     private val launchPermissions =
         registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
 
@@ -66,13 +68,17 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private val getPictureFromGallery =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             imageUri = it
-            authViewModel.saveProfilePhotoInternally(requireContext(), convertUriToBimap(it,requireContext()))
+            authViewModel.saveProfilePhotoInternally(
+                requireContext(),
+                convertUriToBimap(it, requireContext())
+            )
             binding.photo.setImageURI(it)
         }
 
-    private val getPictureFromCamera = registerForActivityResult(ActivityResultContracts.TakePicturePreview()){
-        authViewModel.saveProfilePhotoInternally(requireContext(),it)
-        binding.photo.setImageBitmap(it)
+    private val getPictureFromCamera =
+        registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+            authViewModel.saveProfilePhotoInternally(requireContext(), it)
+            binding.photo.setImageBitmap(it)
         }
 
     private fun listenToChanges() {
@@ -81,7 +87,6 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 when (it) {
                     is AuthStateInfo.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        Toast.makeText(requireContext(), "me conectei", Toast.LENGTH_SHORT).show()
                         authViewModel.clearState()
                     }
 
@@ -111,39 +116,61 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         }
 
         binding.registerButton.setOnClickListener {
-            val email = binding.email.text.toString()
-            val password = binding.passwordEditText.text.toString()
-            val confirmPassword = binding.confirmPasswordET.text.toString()
-            val name = binding.name.text.toString()
-            authViewModel.validateEmail(email)
-            authViewModel.validateName(name)
-            authViewModel.validatePassword(password, confirmPassword)
+            val inputs = getInputs()
+            authViewModel.validateEmail(inputs.email)
+            authViewModel.validateName(inputs.name)
+            authViewModel.validatePassword(inputs.password, inputs.confirmPassword)
             Log.d("cul", "onButtonsClick: ${authViewModel.count}")
             if (authViewModel.count >= 3) {
                 authViewModel.count = 0
-                authViewModel.registerWithCredentials(email, password)
+                authViewModel.registerWithCredentials(
+                    AppUserModelDto(
+                        name = inputs.name,
+                        email = inputs.email,
+                        phone = inputs.phone,
+                        accountType = inputs.accountType
+
+                    ), inputs.password
+                )
             }
         }
 
         binding.addPhoto.setOnClickListener {
             permissionsHandler = verifyGalleryPermissions(requireContext())
-            if (checkPermissions()){
-               AlertDialog.Builder(requireContext())
+            if (checkPermissions()) {
+                AlertDialog.Builder(requireContext())
                     .setTitle(getString(R.string.select_an_image))
                     .setMessage(getString(R.string.choose_your_option))
-                    .setPositiveButton(getString(R.string.camera)){ dialog, _ ->
+                    .setPositiveButton(getString(R.string.camera)) { dialog, _ ->
                         dialog.dismiss()
                         getPictureFromCamera.launch()
                     }
-                    .setNegativeButton(getString(R.string.gallery)){ dialog, _ ->
+                    .setNegativeButton(getString(R.string.gallery)) { dialog, _ ->
                         dialog.dismiss()
                         getPictureFromGallery.launch("image/*")
                     }.create()
-                   .show()
+                    .show()
 
             } else
-                Snackbar.make(binding.root,"Make Sure To enable Camera Permissions",Snackbar.LENGTH_LONG).show()
+                Snackbar.make(
+                    binding.root,
+                    "Make Sure To enable Camera Permissions",
+                    Snackbar.LENGTH_LONG
+                ).show()
         }
+    }
+
+    private fun getInputs(): InputModel {
+        return InputModel(
+            email = binding.email.text.toString(),
+            password = binding.passwordEditText.text.toString(),
+            confirmPassword = binding.confirmPasswordET.text.toString(),
+            phone = binding.phone.text.toString(),
+            name = binding.name.text.toString(),
+            accountType = if (binding.spinner.selectedItem.toString()
+                    .contains("Personal")
+            ) "personal" else "business"
+        )
     }
 
 
@@ -292,8 +319,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
                             .show()
                     }
-                    is AuthViewModel.UiEvent.PhotoUploadSuccess ->{
-                        Toast.makeText(requireContext(), "salvei a img com success", Toast.LENGTH_SHORT).show()
+                    is AuthViewModel.UiEvent.PhotoUploadSuccess -> {
+
                     }
                 }
             }
