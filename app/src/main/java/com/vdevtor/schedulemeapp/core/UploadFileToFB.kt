@@ -23,6 +23,7 @@ class UploadFileToFB(
         val storageRef = storage.reference.child(
             "${auth.currentUser?.uid ?: ""}/$PROFILE_PIC_REFERENCE"
         )
+
         val file = File(context.filesDir.path + "/$PROFILE_PIC_PATH")
         Log.d("upload", "invoke: ${file.absolutePath}")
         return@flow if (file.exists()) {
