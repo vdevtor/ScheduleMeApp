@@ -1,17 +1,25 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation.register
 
+import android.app.AlertDialog
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.launch
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.common.core.BaseFragment
 import com.vdevtor.common.utils.MaskEditUtil
+import com.vdevtor.common.utils.convertUriToBimap
+import com.vdevtor.common.utils.verifyGalleryPermissions
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.databinding.FragmentRegisterBinding
 import com.vdevtor.schedulemeapp.feature_login.domain.model.ProvideAccountArray
@@ -24,22 +32,48 @@ import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
+
 @ExperimentalCoroutinesApi
 class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterBinding::inflate) {
     private val authViewModel: AuthViewModel by sharedViewModel()
     private val provideAccountArray: ProvideAccountArray by inject()
+    private var permissionsHandler : Array<String> = arrayOf()
+    private  var imageUri : Uri? = null
+    private  var imageUriPath  = ""
+    @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         onButtonsClick()
         observeEditTextPassword()
         applyMask()
         binding.spinner.adapter =
             AccountTypeAdapter(requireContext(), R.layout.account_type_item, provideAccountArray())
-
         listenToChanges()
         uiEventListener()
     }
+    private val launchPermissions =
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {}
 
+    private fun checkPermissions(): Boolean {
+        return if (permissionsHandler.isEmpty()) true else {
+            launchPermissions.launch(permissionsHandler)
+            false
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private val getPictureFromGallery =
+        registerForActivityResult(ActivityResultContracts.GetContent()) {
+            imageUri = it
+            authViewModel.saveProfilePhotoInternally(requireContext(), convertUriToBimap(it,requireContext()))
+            binding.photo.setImageURI(it)
+        }
+
+    private val getPictureFromCamera = registerForActivityResult(ActivityResultContracts.TakePicturePreview()){
+        authViewModel.saveProfilePhotoInternally(requireContext(),it)
+        binding.photo.setImageBitmap(it)
+        }
 
     private fun listenToChanges() {
         lifecycleScope.launchWhenResumed {
@@ -70,6 +104,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.P)
     private fun onButtonsClick() {
         binding.backArrow.setOnClickListener {
             findNavController().navigateWithAnimationsPopUp(RegisterFragmentDirections.actionRegisterToLogin().actionId)
@@ -88,6 +123,26 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 authViewModel.count = 0
                 authViewModel.registerWithCredentials(email, password)
             }
+        }
+
+        binding.addPhoto.setOnClickListener {
+            permissionsHandler = verifyGalleryPermissions(requireContext())
+            if (checkPermissions()){
+               AlertDialog.Builder(requireContext())
+                    .setTitle(getString(R.string.select_an_image))
+                    .setMessage(getString(R.string.choose_your_option))
+                    .setPositiveButton(getString(R.string.camera)){ dialog, _ ->
+                        dialog.dismiss()
+                        getPictureFromCamera.launch()
+                    }
+                    .setNegativeButton(getString(R.string.gallery)){ dialog, _ ->
+                        dialog.dismiss()
+                        getPictureFromGallery.launch("image/*")
+                    }.create()
+                   .show()
+
+            } else
+                Snackbar.make(binding.root,"Make Sure To enable Camera Permissions",Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -236,6 +291,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         binding.registerButton.visibility = View.VISIBLE
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
                             .show()
+                    }
+                    is AuthViewModel.UiEvent.PhotoUploadSuccess ->{
+                        Toast.makeText(requireContext(), "salvei a img com success", Toast.LENGTH_SHORT).show()
                     }
                 }
             }

@@ -95,6 +95,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-auth:20.0.0'
     implementation 'com.firebaseui:firebase-ui-auth:4.3.2'
 
+    // Rounded image view
+    implementation 'com.makeramen:roundedimageview:2.3.0'
+
     //modules
     implementation project(':common')
 

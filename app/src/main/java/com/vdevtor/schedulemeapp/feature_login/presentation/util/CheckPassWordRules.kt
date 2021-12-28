@@ -1,6 +1,5 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation.util
 
-import android.util.Log
 import java.util.regex.Pattern
 
 
@@ -15,14 +14,14 @@ fun String.isPasswordEquals(string: String): Boolean{
     return this == string && this.isNotBlank()
 }
 
-fun CharSequence?.hasOneSpecialChar() : Boolean{
+fun CharSequence.hasOneSpecialChar() : Boolean{
     val passwordREGEX = Pattern.compile(
         "^(?=.*[@#!$%^&+=]).+$"
     )
     return passwordREGEX.matcher(this).matches()
 }
 
-fun CharSequence?.hasOneDigit() : Boolean{
+fun CharSequence.hasOneDigit() : Boolean{
     val passwordREGEX = Pattern.compile(
         "^(?=.*[0-9]).+$"
     )
@@ -30,16 +29,16 @@ fun CharSequence?.hasOneDigit() : Boolean{
     return passwordREGEX.matcher(this).matches()
 }
 
-fun CharSequence?.hasOneUpLetter() : Boolean{
+fun CharSequence.hasOneUpLetter() : Boolean{
     val passwordREGEX = Pattern.compile(
         "^(?=.*[A-Z]).+$"
     )
     return passwordREGEX.matcher(this).matches()
 }
 
-fun CharSequence?.hasSixChar() : Boolean{
-    var length = 0
-    this?.let {
+fun CharSequence.hasSixChar() : Boolean{
+    var length: Int
+    this.let {
         length = it.length
     }
    return length >= 6

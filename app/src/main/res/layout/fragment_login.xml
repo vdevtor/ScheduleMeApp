@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_login_register"
     tools:context=".feature_login.presentation.login.LoginFragment">
 
     <ImageView
@@ -24,6 +23,8 @@
         android:id="@+id/box"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:elevation="10dp"
+        android:outlineProvider="bounds"
         android:background="@drawable/box_login_cardview"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -41,7 +42,7 @@
             android:adjustViewBounds="true"
             android:background="@color/fui_transparent"
             android:drawableTop="@drawable/ic_right_arrow"
-            android:drawableTint="@color/primaryPink"
+            android:drawableTint="@color/lightPurple"
             android:elegantTextHeight="true"
             android:text="@string/skip"
             android:textAllCaps="false"
@@ -56,6 +57,7 @@
             android:layout_height="wrap_content"
             android:autofillHints="emailAddress"
             android:textColorHint="@color/hintColor"
+            android:elevation="4dp"
             android:background="@drawable/background_edit_text"
             android:hint="@string/hint_email"
             android:imeOptions="actionDone"
@@ -82,7 +84,10 @@
             android:hint="@string/hint_material_by_pass"
             app:hintTextColor="@color/hintColor"
             app:hintAnimationEnabled="false"
+            android:layout_margin="5dp"
+            android:outlineProvider="bounds"
             android:textColorHint="@color/hintColor"
+            android:backgroundTint="@color/white"
             app:layout_constraintEnd_toEndOf="@id/email"
             app:layout_constraintStart_toStartOf="@id/email"
             app:layout_constraintTop_toBottomOf="@id/email"
@@ -103,7 +108,6 @@
                 android:background="@drawable/background_edit_text"
                 android:paddingTop="10dp"
                 android:paddingEnd="20dp"
-                android:paddingBottom="10dp"
                 />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -115,7 +119,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="@string/forgot_password"
-            android:textColor="@color/mainColor"
+            android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@id/loginButton"
             app:layout_constraintEnd_toEndOf="@id/password"

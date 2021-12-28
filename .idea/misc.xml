@@ -8,10 +8,17 @@
         <entry key="..\:/Users/Moochies/StudioProjects/ScheduleMeApp/app/src/main/res/layout/fragment_register.xml" value="0.264" />
         <entry key="app/src/main/res/drawable/background_edit_text.xml" value="0.2222222222222222" />
         <entry key="app/src/main/res/drawable/background_login_register.xml" value="0.2222222222222222" />
+        <entry key="app/src/main/res/drawable/background_photo_holder.xml" value="0.2222222222222222" />
         <entry key="app/src/main/res/drawable/background_spinner.xml" value="0.2222222222222222" />
+        <entry key="app/src/main/res/drawable/box_login_cardview.xml" value="0.31145833333333334" />
+        <entry key="app/src/main/res/drawable/ic_add_photo.xml" value="0.31145833333333334" />
+        <entry key="app/src/main/res/drawable/ic_clockpng.xml" value="0.31145833333333334" />
+        <entry key="app/src/main/res/drawable/login_button.xml" value="0.31145833333333334" />
+        <entry key="app/src/main/res/drawable/register_button.xml" value="0.31145833333333334" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.14447463768115942" />
-        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.14447463768115942" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_register.xml" value="0.335" />
+        <entry key="app/src/main/res/xml/file_paths.xml" value="0.16802536231884058" />
       </map>
     </option>
   </component>

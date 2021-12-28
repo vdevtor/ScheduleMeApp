@@ -1,9 +1,12 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation
 
+import android.content.Context
+import android.graphics.Bitmap
 import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.common.core.Resource
+import com.vdevtor.common.utils.saveProfilePictureInternally
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.RegisterValidationManager
 import kotlinx.coroutines.Job
@@ -250,6 +253,14 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
        return successEmail
     }
 
+     fun saveProfilePhotoInternally(context:Context,bitmap: Bitmap){
+        viewModelScope.launch {
+            if (saveProfilePictureInternally(context, bitmap)) _eventFlow.emit(
+                UiEvent.PhotoUploadSuccess
+            )
+        }
+    }
+
     fun clearState(){
         _state.value = AuthStateInfo.None
     }
@@ -262,5 +273,6 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         object PassWordDifferent : UiEvent()
         object PassWordWeak: UiEvent()
         object NameError : UiEvent()
+        object PhotoUploadSuccess : UiEvent()
     }
 }
