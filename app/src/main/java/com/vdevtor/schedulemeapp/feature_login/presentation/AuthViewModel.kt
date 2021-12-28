@@ -14,7 +14,10 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
-class AuthViewModel(private val authUseCases: AuthUseCases, private  val registerValidationManager: RegisterValidationManager) :
+class AuthViewModel(
+    private val authUseCases: AuthUseCases,
+    private val registerValidationManager: RegisterValidationManager
+) :
     ViewModel() {
 
     var successEmail: Boolean = false
@@ -58,30 +61,30 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         }
     }
 
-    fun loginWithEmailPassword(email: String,password: String){
+    fun loginWithEmailPassword(email: String, password: String) {
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
             authUseCases.loginWithEmail(email, password).onEach { resource ->
-                when(resource){
-                    is Resource.Loading ->{
+                when (resource) {
+                    is Resource.Loading -> {
                         _state.value = AuthStateInfo.Loading
                     }
-                    is Resource.Success ->{
+                    is Resource.Success -> {
                         _state.value = AuthStateInfo.Success
                     }
-                    is Resource.EmailError ->{
+                    is Resource.EmailError -> {
                         _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.EmailError(resource.message ?: "Verify your email")
                         )
                     }
-                    is Resource.PasswordError ->{
+                    is Resource.PasswordError -> {
                         _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.PasswordError(resource.message ?: "Verify your password")
                         )
                     }
-                    is Resource.Error ->{
+                    is Resource.Error -> {
                         _state.value = AuthStateInfo.None
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
@@ -94,7 +97,11 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         }
     }
 
-    fun registerWithCredentials(userInfo: AppUserModelDto, password: String,uploadProfilePic : Boolean = false) {
+    fun registerWithCredentials(
+        userInfo: AppUserModelDto,
+        password: String,
+        uploadProfilePic: Boolean = false
+    ) {
         loginJob?.cancel()
         loginJob = viewModelScope.launch {
             authUseCases.registerAccountWithCredentials(userInfo, password).onEach { resource ->
@@ -126,15 +133,37 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
 
                     is Resource.Success -> {
                         if (uploadProfilePic) uploadPhotoToFireBase() else
-                        _state.value = AuthStateInfo.Success
+                            _state.value = AuthStateInfo.Success
                     }
                 }
             }.launchIn(this)
         }
     }
 
-    private fun uploadPhotoToFireBase() {
 
+    private suspend fun uploadPhotoToFireBase() {
+        viewModelScope.launch {
+            authUseCases.uploadFileToFB().onEach {
+                when (it) {
+                    is Resource.Loading -> {
+                        _eventFlow.emit(
+                            UiEvent.UploadingPhoto
+                        )
+                    }
+                    is Resource.Success -> {
+                        _state.value = AuthStateInfo.Success
+                    }
+                    is Resource.Error -> {
+                        _eventFlow.emit(
+                            UiEvent.UploadingPhotoFailed(
+                                message = it.message ?: "Unknown error"
+                            )
+                        )
+                    }
+                    else -> Unit
+                }
+            }.launchIn(this)
+        }
     }
 
     fun loginWithGoogle(result: ActivityResult) {
@@ -145,7 +174,7 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
                         _state.value = AuthStateInfo.SuccessLoginWithGoogle()
                     }
                     is Resource.Error -> {
-                       // _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
+                        // _state.value = AuthStateInfo.AuthError(resource.message ?: "Unknown Error")
                         _eventFlow.emit(
                             UiEvent.ShowSnackbar(
                                 message = resource.message ?: "Unknown Error"
@@ -171,51 +200,52 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         }
     }
 
-    fun validatePassword(password: String,confirmPassword:String) : Boolean{
+    fun validatePassword(password: String, confirmPassword: String): Boolean {
         viewModelScope.launch {
-            registerValidationManager.checkPassWordForm(password,confirmPassword).onEach { resource ->
-                when(resource){
-                    is Resource.Success->{
-                        ++count
-                        successPassWord = true
-                    }
-                    is Resource.Error->{
-                        --count
-                        successPassWord = false
-                        resource.message?.let {
-                            if (it.contains("different")){
-                                _eventFlow.emit(
-                                    UiEvent.PassWordDifferent
-                                )
-                            }else{
-                                _eventFlow.emit(
-                                    UiEvent.PassWordWeak
-                                )
+            registerValidationManager.checkPassWordForm(password, confirmPassword)
+                .onEach { resource ->
+                    when (resource) {
+                        is Resource.Success -> {
+                            ++count
+                            successPassWord = true
+                        }
+                        is Resource.Error -> {
+                            --count
+                            successPassWord = false
+                            resource.message?.let {
+                                if (it.contains("different")) {
+                                    _eventFlow.emit(
+                                        UiEvent.PassWordDifferent
+                                    )
+                                } else {
+                                    _eventFlow.emit(
+                                        UiEvent.PassWordWeak
+                                    )
+                                }
                             }
                         }
+                        else -> Unit
                     }
-                    else -> Unit
-                }
-            }.launchIn(this)
+                }.launchIn(this)
         }
         return successPassWord
     }
 
-    fun validateName(name:String) :Boolean{
+    fun validateName(name: String): Boolean {
         viewModelScope.launch {
-            registerValidationManager.checkNameForm(name).onEach{ resource ->
-                when(resource){
-                    is Resource.Success ->{
+            registerValidationManager.checkNameForm(name).onEach { resource ->
+                when (resource) {
+                    is Resource.Success -> {
                         ++count
                         successName = true
                     }
-                    is Resource.Error ->{
+                    is Resource.Error -> {
                         --count
-                        successName= false
+                        successName = false
                         resource.message?.let {
-                           _eventFlow.emit(
-                               UiEvent.NameError
-                           )
+                            _eventFlow.emit(
+                                UiEvent.NameError
+                            )
                         }
                     }
                     else -> Unit
@@ -226,23 +256,23 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         return successName
     }
 
-    fun validateEmail(email : String) : Boolean{
+    fun validateEmail(email: String): Boolean {
         viewModelScope.launch {
-            registerValidationManager.checkEmailForm(email).onEach{ resource ->
-                when(resource){
-                    is Resource.Success ->{
+            registerValidationManager.checkEmailForm(email).onEach { resource ->
+                when (resource) {
+                    is Resource.Success -> {
                         ++count
                         successEmail = true
                     }
-                    is Resource.Error ->{
+                    is Resource.Error -> {
                         --count
                         successEmail = false
                         resource.message?.let {
-                            if (it.contains("blank")){
+                            if (it.contains("blank")) {
                                 _eventFlow.emit(
                                     UiEvent.EmailBlank
                                 )
-                            }else{
+                            } else {
                                 _eventFlow.emit(
                                     UiEvent.EmailError(
                                         it
@@ -256,10 +286,10 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
 
             }.launchIn(this)
         }
-       return successEmail
+        return successEmail
     }
 
-     fun saveProfilePhotoInternally(context:Context,bitmap: Bitmap){
+    fun saveProfilePhotoInternally(context: Context, bitmap: Bitmap) {
         viewModelScope.launch {
             if (saveProfilePictureInternally(context, bitmap)) _eventFlow.emit(
                 UiEvent.PhotoUploadSuccess
@@ -267,8 +297,14 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         }
     }
 
-    fun clearState(){
+    fun clearState() {
         _state.value = AuthStateInfo.None
+    }
+
+    fun setStateError(message: String) {
+        _state.value = AuthStateInfo.AuthError(
+            message
+        )
     }
 
     sealed class UiEvent {
@@ -277,8 +313,10 @@ class AuthViewModel(private val authUseCases: AuthUseCases, private  val registe
         data class EmailError(val message: String) : UiEvent()
         object EmailBlank : UiEvent()
         object PassWordDifferent : UiEvent()
-        object PassWordWeak: UiEvent()
+        object PassWordWeak : UiEvent()
         object NameError : UiEvent()
         object PhotoUploadSuccess : UiEvent()
+        object UploadingPhoto : UiEvent()
+        data class UploadingPhotoFailed(val message: String) : UiEvent()
     }
 }

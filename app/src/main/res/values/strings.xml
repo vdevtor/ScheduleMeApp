@@ -43,4 +43,6 @@
     <string name="choose_your_option">Choose Your Option</string>
     <string name="camera">Camera</string>
     <string name="gallery">Gallery</string>
+    <string name="uploading_your_photo">Uploading your photo</string>
+    <string name="button_add_photo">button Add photo</string>
 </resources>

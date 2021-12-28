@@ -1,6 +1,7 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation.register
 
 import android.app.AlertDialog
+import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -39,7 +40,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private val authViewModel: AuthViewModel by sharedViewModel()
     private val provideAccountArray: ProvideAccountArray by inject()
     private var permissionsHandler: Array<String> = arrayOf()
-    private var imageUri: Uri? = null
+    private var imageUri: Any? = null
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -67,7 +68,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     @RequiresApi(Build.VERSION_CODES.P)
     private val getPictureFromGallery =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
-            imageUri = it
+            imageUri = it as Uri
             authViewModel.saveProfilePhotoInternally(
                 requireContext(),
                 convertUriToBimap(it, requireContext())
@@ -77,6 +78,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
 
     private val getPictureFromCamera =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
+            imageUri = it as Bitmap
             authViewModel.saveProfilePhotoInternally(requireContext(), it)
             binding.photo.setImageBitmap(it)
         }
@@ -130,7 +132,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         phone = inputs.phone,
                         accountType = inputs.accountType
 
-                    ), inputs.password
+                    ), inputs.password, imageUri != null
                 )
             }
         }
@@ -321,6 +323,16 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                     }
                     is AuthViewModel.UiEvent.PhotoUploadSuccess -> {
 
+                    }
+                    is AuthViewModel.UiEvent.UploadingPhoto -> {
+                        binding.uploadingPhoto.visibility = View.VISIBLE
+                    }
+
+                    is AuthViewModel.UiEvent.UploadingPhotoFailed -> {
+                        authViewModel.setStateError(event.message)
+                        binding.uploadingPhoto.visibility = View.GONE
+                        Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
+                            .show()
                     }
                 }
             }

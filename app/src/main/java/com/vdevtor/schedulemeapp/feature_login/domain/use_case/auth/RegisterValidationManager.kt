@@ -10,12 +10,12 @@ import kotlinx.coroutines.flow.flow
 
 class RegisterValidationManager {
 
-    fun checkEmailForm(email: String) : Flow<Resource<Boolean>> = flow {
+    fun checkEmailForm(email: String): Flow<Resource<Boolean>> = flow {
         if (email.isNotBlank()) {
-            if (email.isEmailValid()){
+            if (email.isEmailValid()) {
                 emit(Resource.Success(true))
-            }else{
-               emit(Resource.Error<Boolean>(email))
+            } else {
+                emit(Resource.Error<Boolean>(email))
             }
 
         } else emit(Resource.Error<Boolean>("email blank"))
@@ -25,18 +25,19 @@ class RegisterValidationManager {
     fun checkNameForm(name: String): Flow<Resource<Boolean>> = flow {
         if (name.validateName()) {
             emit(Resource.Success(true))
-        }else emit(Resource.Error<Boolean>("invalid name"))
+        } else emit(Resource.Error<Boolean>("invalid name"))
     }
 
 
-    fun checkPassWordForm(password: String, confirmPassword: String): Flow<Resource<Boolean>> = flow {
-        if (password.isPasswordEquals(confirmPassword)) {
-            if (password.isPassWordStrongEnough()){
-                emit(Resource.Success(true))
+    fun checkPassWordForm(password: String, confirmPassword: String): Flow<Resource<Boolean>> =
+        flow {
+            if (password.isPasswordEquals(confirmPassword)) {
+                if (password.isPassWordStrongEnough()) {
+                    emit(Resource.Success(true))
 
-            }else emit(Resource.Error<Boolean>("invalid Password"))
+                } else emit(Resource.Error<Boolean>("invalid Password"))
 
-        } else emit(Resource.Error<Boolean>("different passwords"))
-    }
+            } else emit(Resource.Error<Boolean>("different passwords"))
+        }
 
 }

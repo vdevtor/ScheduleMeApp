@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.ktx.Firebase
 import com.vdevtor.common.core.Resource
 import com.vdevtor.common.data.model.AppUserModelDto
 import com.vdevtor.schedulemeapp.R
@@ -21,7 +20,6 @@ class AuthRepositoryImp(
     private val auth: FirebaseAuth,
     private val fireStore: FirebaseFirestore
 ) : AuthRepository {
-
 
 
     override fun isUserAuthenticatedInFirebase() = auth.currentUser != null

@@ -65,37 +65,35 @@
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_marginStart="16dp"
-            app:riv_corner_radius="100dp"
             android:src="@drawable/background_photo_holder"
             app:layout_constraintBottom_toBottomOf="@id/signUp"
-            app:layout_constraintTop_toTopOf="@id/signUp"
             app:layout_constraintStart_toEndOf="@id/signUp"
-            />
+            app:layout_constraintTop_toTopOf="@id/signUp"
+            app:riv_corner_radius="100dp" />
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:id="@+id/photo"
             android:layout_width="64dp"
             android:layout_height="64dp"
-            app:riv_corner_radius="100dp"
-            android:scaleType="fitXY"
             android:adjustViewBounds="true"
             android:padding="5dp"
+            android:scaleType="fitXY"
             android:src="@drawable/ic_round_person_24"
             app:layout_constraintBottom_toBottomOf="@id/photoCover"
-            app:layout_constraintTop_toTopOf="@id/photoCover"
-            app:layout_constraintStart_toStartOf="@id/photoCover"
             app:layout_constraintEnd_toEndOf="@id/photoCover"
-            />
+            app:layout_constraintStart_toStartOf="@id/photoCover"
+            app:layout_constraintTop_toTopOf="@id/photoCover"
+            app:riv_corner_radius="100dp" />
 
         <ImageView
             android:id="@+id/addPhoto"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="@id/photo"
-            app:layout_constraintBottom_toBottomOf="@id/photo"
-            app:layout_constraintStart_toEndOf="@id/photo"
+            android:contentDescription="@string/button_add_photo"
             android:src="@drawable/ic_add_photo"
-            />
+            app:layout_constraintBottom_toBottomOf="@id/photo"
+            app:layout_constraintEnd_toEndOf="@id/photo"
+            app:layout_constraintStart_toEndOf="@id/photo" />
 
         <EditText
             android:id="@+id/name"
@@ -329,6 +327,18 @@
             </LinearLayout>
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/uploadingPhoto"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/uploading_your_photo"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@id/progressBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <ProgressBar
             android:id="@+id/progressBar"
