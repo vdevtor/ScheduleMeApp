@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.lifecycleScope
@@ -27,9 +28,17 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
     private val authViewModel: AuthViewModel by sharedViewModel()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkIfAlreadyLogged()
         onButtonsClicks()
         uiEvents()
         listenToResponses()
+    }
+
+    private fun checkIfAlreadyLogged() {
+        if (authViewModel.isUserAuthenticatedInFirebase()){
+            // TO DO GO TO ANOTHER ACTIVITY
+            Toast.makeText(requireContext(), "logado", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun onButtonsClicks() {
@@ -60,7 +69,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 when (state) {
                     is AuthStateInfo.Success -> {
                         this.cancel()
-                        findNavController().navigateWithAnimationsPopUp(LoginFragmentDirections.actionLoginToRegister().actionId)
+                        //TO DO GO TO ANOTHER ACTIVITY
                         authViewModel.clearState()
                     }
                     is AuthStateInfo.AuthError -> {
@@ -79,7 +88,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
                     is AuthStateInfo.SuccessLoginWithGoogle -> {
                         this.cancel()
-                        findNavController().navigateWithAnimationsPopUp(LoginFragmentDirections.actionLoginToRegister().actionId)
+                        // TO DO GO TO ANOTHER ACTIVITY
                     }
                     else -> Unit
                 }

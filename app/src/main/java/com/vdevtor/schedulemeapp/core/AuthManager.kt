@@ -51,4 +51,6 @@ class AuthManager( val auth: FirebaseAuth, private val context: Context) {
             emit(Resource.Error<Boolean>(context.getString(R.string.anonymously_logout_error)))
         }
     }
+
+     fun isUserAuthenticatedInFirebase() = auth.currentUser != null
 }

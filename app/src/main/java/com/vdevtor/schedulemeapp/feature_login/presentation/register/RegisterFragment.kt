@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.launch
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
@@ -89,7 +90,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 when (it) {
                     is AuthStateInfo.Success -> {
                         binding.progressBar.visibility = View.GONE
+                        if (binding.uploadingPhoto.isVisible) binding.uploadingPhoto.visibility = View.GONE
                         authViewModel.clearState()
+                        //TO DO GO TO NEXT ACTIVITY
                     }
 
                     is AuthStateInfo.Loading -> {

@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.vdevtor.common.core.Resource
 import com.vdevtor.common.data.model.AppUserModelDto
 import com.vdevtor.common.utils.saveProfilePictureInternally
+import com.vdevtor.schedulemeapp.core.AuthManager
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.RegisterValidationManager
 import kotlinx.coroutines.Job
@@ -16,7 +17,8 @@ import kotlinx.coroutines.launch
 
 class AuthViewModel(
     private val authUseCases: AuthUseCases,
-    private val registerValidationManager: RegisterValidationManager
+    private val registerValidationManager: RegisterValidationManager,
+    private val authManager: AuthManager
 ) :
     ViewModel() {
 
@@ -306,6 +308,7 @@ class AuthViewModel(
             message
         )
     }
+    fun isUserAuthenticatedInFirebase() = authManager.isUserAuthenticatedInFirebase()
 
     sealed class UiEvent {
         data class ShowSnackbar(val message: String) : UiEvent()
