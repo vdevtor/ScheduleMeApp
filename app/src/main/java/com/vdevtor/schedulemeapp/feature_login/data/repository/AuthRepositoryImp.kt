@@ -5,7 +5,8 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vdevtor.common.core.Resource
-import com.vdevtor.common.data.local.entity.AppUserModelDto
+import com.vdevtor.data.local.entity.AppUserModelDto
+import com.vdevtor.domain.repository.UserRepository
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthRepository
 import com.vdevtor.schedulemeapp.feature_login.presentation.util.isEmailValid
@@ -18,7 +19,8 @@ import kotlinx.coroutines.tasks.await
 class AuthRepositoryImp(
     private val context: Context,
     private val auth: FirebaseAuth,
-    private val fireStore: FirebaseFirestore
+    private val fireStore: FirebaseFirestore,
+    private val userRepository: UserRepository
 ) : AuthRepository {
 
 
@@ -68,6 +70,9 @@ class AuthRepositoryImp(
                                     .set(user)
                             kotlinx.coroutines.delay(2500)
                             if (storageResult.isSuccessful){
+                                userRepository.insertNewUserAtDataBase(userInfo.copy(
+                                    userUID = auth.currentUser?.uid
+                                ))
                                 emit(Resource.Success(true))
                             } else {
                                 Log.d("storage", "firebaseSignUpWithCredentials: ${storageResult.exception}")

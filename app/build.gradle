@@ -27,6 +27,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false  // Avoid conflicts with Instant Run
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
@@ -102,6 +103,7 @@ dependencies {
 
     //modules
     implementation project(':common')
+    implementation project(':database')
 
 
 

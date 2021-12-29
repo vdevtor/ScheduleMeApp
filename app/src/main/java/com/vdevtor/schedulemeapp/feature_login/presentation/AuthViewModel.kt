@@ -6,7 +6,7 @@ import androidx.activity.result.ActivityResult
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.vdevtor.common.core.Resource
-import com.vdevtor.common.data.local.entity.AppUserModelDto
+import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.common.utils.saveProfilePictureInternally
 import com.vdevtor.schedulemeapp.core.AuthManager
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases

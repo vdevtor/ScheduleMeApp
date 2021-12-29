@@ -18,7 +18,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.common.core.BaseFragment
-import com.vdevtor.common.data.local.entity.AppUserModelDto
+import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.common.utils.MaskEditUtil
 import com.vdevtor.common.utils.convertUriToBimap
 import com.vdevtor.common.utils.verifyGalleryPermissions
@@ -133,7 +133,9 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         name = inputs.name,
                         email = inputs.email,
                         phone = inputs.phone,
-                        accountType = inputs.accountType
+                        accountType = inputs.accountType,
+                        jobOffered = "",
+                        userUID = ""
 
                     ), inputs.password, imageUri != null
                 )
