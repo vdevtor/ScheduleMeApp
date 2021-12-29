@@ -24,7 +24,7 @@ class UploadFileToFB(
             "${auth.currentUser?.uid ?: ""}/$PROFILE_PIC_REFERENCE"+"_${auth.currentUser?.uid}.jpg"
         )
 
-        val file = File(context.filesDir.path + "/$PROFILE_PIC_PATH")
+        val file = File(context.filesDir.path + "/${PROFILE_PIC_PATH}_${auth.currentUser?.uid}.jpg")
         Log.d("upload", "invoke: ${file.absolutePath}")
         return@flow if (file.exists()) {
             val uri = Uri.fromFile(file)

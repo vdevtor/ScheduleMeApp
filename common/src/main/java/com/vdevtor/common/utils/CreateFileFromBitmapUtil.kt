@@ -11,13 +11,12 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import com.vdevtor.common.core.Constants.PROFILE_PIC_FOLDER
 import com.vdevtor.common.core.Constants.PROFILE_PIC_NAME
-import com.vdevtor.common.core.Resource
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 
 
-fun saveProfilePictureInternally(context: Context, bitmap: Bitmap,uid : String): Resource<String> {
+fun saveProfilePictureInternally(context: Context, bitmap: Bitmap,uid : String): Boolean {
 
     val myDir = File(context.filesDir, PROFILE_PIC_FOLDER)
     myDir.mkdirs()
@@ -35,10 +34,10 @@ fun saveProfilePictureInternally(context: Context, bitmap: Bitmap,uid : String):
                 throw IOException("Couldn't save bitmap.")
             }
         }
-        Resource.Success(imgFile.absolutePath)
+        true
     } catch (e: IOException) {
         e.printStackTrace()
-        Resource.Error("couldn't save photo internally")
+        false
     }
 
 }

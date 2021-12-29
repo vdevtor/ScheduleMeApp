@@ -2,6 +2,7 @@ package com.vdevtor.data.repository
 
 import com.vdevtor.common.core.Resource
 import com.vdevtor.common.domain.model.UserModel
+import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.domain.repository.UserRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -21,4 +22,5 @@ class UserRepositoryImp (val dao: com.vdevtor.data.local.AppUserDao): UserReposi
     override fun insertNewUserAtDataBase(user: com.vdevtor.data.local.entity.AppUserModelDto) {
             dao.insertNewUserPersonalInfo(user)
     }
+
 }

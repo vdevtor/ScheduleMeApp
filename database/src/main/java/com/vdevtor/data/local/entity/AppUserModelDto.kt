@@ -13,7 +13,8 @@ data class AppUserModelDto(
     val accountType : String,
     val jobOffered : String,
     @PrimaryKey val id : Int? = null,
-    val userUID : String? = null
+    val userUID : String? = null,
+    val profilePicPath : String
 ) : Serializable {
 
     fun toUserModel() : UserModel {

@@ -133,7 +133,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         phone = inputs.phone,
                         accountType = inputs.accountType,
                         jobOffered = "",
-                        userUID = ""
+                        userUID = "",
+                        profilePicPath = ""
 
                     ), inputs.password, imageUri != null
                 )

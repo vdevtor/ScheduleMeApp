@@ -12,6 +12,7 @@ import com.vdevtor.schedulemeapp.core.AuthManager
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.AuthUseCases
 import com.vdevtor.schedulemeapp.feature_login.domain.use_case.auth.RegisterValidationManager
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 
@@ -303,8 +304,7 @@ class AuthViewModel(
 
     fun saveProfilePhotoInternally(context: Context, bitmap: Bitmap,uid : String) {
         viewModelScope.launch {
-            if (saveProfilePictureInternally(context, bitmap,uid) is Resource.Success){
-
+            if (saveProfilePictureInternally(context, bitmap,uid)){
                 _eventFlow.emit(
                     UiEvent.PhotoUploadSuccess
                 )

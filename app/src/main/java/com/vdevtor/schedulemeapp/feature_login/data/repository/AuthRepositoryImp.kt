@@ -26,6 +26,7 @@ class AuthRepositoryImp(
 ) : AuthRepository {
 
     var gottenUser: UserModel? = null
+    var userModelDto: AppUserModelDto? = null
     override fun isUserAuthenticatedInFirebase() = auth.currentUser != null
 
     @ExperimentalCoroutinesApi
@@ -76,16 +77,19 @@ class AuthRepositoryImp(
                                     userInfo.copy(
                                         userUID = auth.currentUser?.uid
                                     )
-                                )
+                                ).also {
+                                    userModelDto = userInfo.copy(userUID = auth.currentUser?.uid)
+                                }
                                 userRepository.getUserPersonalInfo(auth.currentUser?.uid ?: "")
                                     .collectLatest { resource ->
                                         resource.data?.let { gottenUser = it }
                                     }
                                 gottenUser?.let {
                                     emit(Resource.Success(it))
-                                } ?: emit(Resource.Error<UserModel>("couldnt save your personal info")).also {
-                                    auth.currentUser?.delete()
                                 }
+                                    ?: emit(Resource.Error<UserModel>("couldnt save your personal info")).also {
+                                        auth.currentUser?.delete()
+                                    }
                             } else {
                                 Log.d(
                                     "storage",

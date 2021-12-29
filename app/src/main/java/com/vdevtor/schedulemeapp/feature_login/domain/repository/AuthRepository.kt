@@ -14,4 +14,5 @@ interface AuthRepository {
     suspend fun firebaseSignUpWithCredentials(userInfo: AppUserModelDto, password: String) : Flow<Resource<UserModel>>
 
     suspend fun firebaseSignInWithCredentials(email: String,password: String) : Flow<Resource<Boolean>>
+
 }
