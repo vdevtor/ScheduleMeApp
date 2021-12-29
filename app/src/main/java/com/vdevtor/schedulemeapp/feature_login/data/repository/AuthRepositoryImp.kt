@@ -5,6 +5,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vdevtor.common.core.Resource
+import com.vdevtor.common.domain.model.UserModel
 import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.domain.repository.UserRepository
 import com.vdevtor.schedulemeapp.R
@@ -13,6 +14,7 @@ import com.vdevtor.schedulemeapp.feature_login.presentation.util.isEmailValid
 import com.vdevtor.schedulemeapp.feature_login.presentation.util.isPassWordStrongEnough
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.tasks.await
 
@@ -23,7 +25,7 @@ class AuthRepositoryImp(
     private val userRepository: UserRepository
 ) : AuthRepository {
 
-
+    var gottenUser: UserModel? = null
     override fun isUserAuthenticatedInFirebase() = auth.currentUser != null
 
     @ExperimentalCoroutinesApi
@@ -45,7 +47,7 @@ class AuthRepositoryImp(
     override suspend fun firebaseSignUpWithCredentials(
         userInfo: AppUserModelDto,
         password: String
-    ): Flow<Resource<Boolean>> = flow {
+    ): Flow<Resource<UserModel>> = flow {
         emit(Resource.Loading())
 
         if (userInfo.email.isEmpty() || password.isBlank()) {
@@ -69,16 +71,29 @@ class AuthRepositoryImp(
                                 fireStore.collection("users").document(auth.currentUser?.uid ?: "")
                                     .set(user)
                             kotlinx.coroutines.delay(2500)
-                            if (storageResult.isSuccessful){
-                                userRepository.insertNewUserAtDataBase(userInfo.copy(
-                                    userUID = auth.currentUser?.uid
-                                ))
-                                emit(Resource.Success(true))
+                            if (storageResult.isSuccessful) {
+                                userRepository.insertNewUserAtDataBase(
+                                    userInfo.copy(
+                                        userUID = auth.currentUser?.uid
+                                    )
+                                )
+                                userRepository.getUserPersonalInfo(auth.currentUser?.uid ?: "")
+                                    .collectLatest { resource ->
+                                        resource.data?.let { gottenUser = it }
+                                    }
+                                gottenUser?.let {
+                                    emit(Resource.Success(it))
+                                } ?: emit(Resource.Error<UserModel>("couldnt save your personal info")).also {
+                                    auth.currentUser?.delete()
+                                }
                             } else {
-                                Log.d("storage", "firebaseSignUpWithCredentials: ${storageResult.exception}")
+                                Log.d(
+                                    "storage",
+                                    "firebaseSignUpWithCredentials: ${storageResult.exception}"
+                                )
                                 auth.currentUser?.delete()
                                 emit(
-                                    Resource.Error<Boolean>(
+                                    Resource.Error<UserModel>(
                                         result.exception?.message ?: context.getString(
                                             R.string.email_password_error
                                         )
@@ -89,7 +104,7 @@ class AuthRepositoryImp(
                     }
                     false -> {
                         emit(
-                            Resource.Error<Boolean>(
+                            Resource.Error<UserModel>(
                                 result.exception?.message ?: context.getString(
                                     R.string.email_password_error
                                 )
@@ -97,8 +112,8 @@ class AuthRepositoryImp(
                         )
                     }
                 }
-            } else emit(Resource.EmailError<Boolean>(context.getString(R.string.invalid_password)))
-        } else emit(Resource.PasswordError<Boolean>(context.getString(R.string.invalid_email)))
+            } else emit(Resource.EmailError<UserModel>(context.getString(R.string.invalid_password)))
+        } else emit(Resource.PasswordError<UserModel>(context.getString(R.string.invalid_email)))
     }
 
     override suspend fun firebaseSignInWithCredentials(

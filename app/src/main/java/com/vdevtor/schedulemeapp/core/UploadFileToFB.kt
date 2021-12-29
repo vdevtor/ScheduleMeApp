@@ -21,7 +21,7 @@ class UploadFileToFB(
     suspend operator fun invoke(): Flow<Resource<Boolean>> = flow {
         emit(Resource.Loading<Boolean>())
         val storageRef = storage.reference.child(
-            "${auth.currentUser?.uid ?: ""}/$PROFILE_PIC_REFERENCE"
+            "${auth.currentUser?.uid ?: ""}/$PROFILE_PIC_REFERENCE"+"_${auth.currentUser?.uid}.jpg"
         )
 
         val file = File(context.filesDir.path + "/$PROFILE_PIC_PATH")

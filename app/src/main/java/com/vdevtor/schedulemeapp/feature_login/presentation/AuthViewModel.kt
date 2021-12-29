@@ -34,6 +34,9 @@ class AuthViewModel(
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
 
+    private val _mediaFlow = MutableSharedFlow<MediaEvent>()
+    val mediaFlow = _mediaFlow.asSharedFlow()
+
     private var loginJob: Job? = null
 
 
@@ -134,7 +137,14 @@ class AuthViewModel(
                     }
 
                     is Resource.Success -> {
-                        if (uploadProfilePic) uploadPhotoToFireBase() else
+                        if (uploadProfilePic) {
+                            _mediaFlow.emit(
+                                MediaEvent.SavePhotoInternally(
+                                    uiid = resource.data?.userUID ?: ""
+                                )
+                            )
+                            uploadPhotoToFireBase()
+                        } else
                             _state.value = AuthStateInfo.Success
                     }
                 }
@@ -291,11 +301,14 @@ class AuthViewModel(
         return successEmail
     }
 
-    fun saveProfilePhotoInternally(context: Context, bitmap: Bitmap) {
+    fun saveProfilePhotoInternally(context: Context, bitmap: Bitmap,uid : String) {
         viewModelScope.launch {
-            if (saveProfilePictureInternally(context, bitmap)) _eventFlow.emit(
-                UiEvent.PhotoUploadSuccess
-            )
+            if (saveProfilePictureInternally(context, bitmap,uid) is Resource.Success){
+
+                _eventFlow.emit(
+                    UiEvent.PhotoUploadSuccess
+                )
+            }
         }
     }
 
@@ -321,5 +334,9 @@ class AuthViewModel(
         object PhotoUploadSuccess : UiEvent()
         object UploadingPhoto : UiEvent()
         data class UploadingPhotoFailed(val message: String) : UiEvent()
+    }
+
+    sealed class MediaEvent{
+        data class SavePhotoInternally(val uiid : String) : MediaEvent()
     }
 }

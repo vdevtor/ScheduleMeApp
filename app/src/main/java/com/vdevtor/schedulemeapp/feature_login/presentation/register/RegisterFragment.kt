@@ -18,10 +18,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.common.core.BaseFragment
-import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.common.utils.MaskEditUtil
 import com.vdevtor.common.utils.convertUriToBimap
 import com.vdevtor.common.utils.verifyGalleryPermissions
+import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.databinding.FragmentRegisterBinding
 import com.vdevtor.schedulemeapp.feature_login.domain.model.InputModel
@@ -41,7 +41,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private val authViewModel: AuthViewModel by sharedViewModel()
     private val provideAccountArray: ProvideAccountArray by inject()
     private var permissionsHandler: Array<String> = arrayOf()
-    private var imageUri: Any? = null
+    private var imageUri: Uri? = null
+    private var imageBitmap: Bitmap? = null
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -54,6 +55,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             AccountTypeAdapter(requireContext(), R.layout.account_type_item, provideAccountArray())
         listenToChanges()
         uiEventListener()
+        mediaEventListener()
     }
 
     private val launchPermissions =
@@ -70,17 +72,12 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
     private val getPictureFromGallery =
         registerForActivityResult(ActivityResultContracts.GetContent()) {
             imageUri = it as Uri
-            authViewModel.saveProfilePhotoInternally(
-                requireContext(),
-                convertUriToBimap(it, requireContext())
-            )
             binding.photo.setImageURI(it)
         }
 
     private val getPictureFromCamera =
         registerForActivityResult(ActivityResultContracts.TakePicturePreview()) {
-            imageUri = it as Bitmap
-            authViewModel.saveProfilePhotoInternally(requireContext(), it)
+            imageBitmap = it as Bitmap
             binding.photo.setImageBitmap(it)
         }
 
@@ -90,7 +87,8 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                 when (it) {
                     is AuthStateInfo.Success -> {
                         binding.progressBar.visibility = View.GONE
-                        if (binding.uploadingPhoto.isVisible) binding.uploadingPhoto.visibility = View.GONE
+                        if (binding.uploadingPhoto.isVisible) binding.uploadingPhoto.visibility =
+                            View.GONE
                         authViewModel.clearState()
                         //TO DO GO TO NEXT ACTIVITY
                     }
@@ -338,6 +336,34 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         binding.uploadingPhoto.visibility = View.GONE
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
                             .show()
+                    }
+                }
+            }
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    private fun mediaEventListener() {
+        lifecycleScope.launch {
+            authViewModel.mediaFlow.collectLatest { event ->
+                when (event) {
+                    is AuthViewModel.MediaEvent.SavePhotoInternally -> {
+                        if (imageBitmap != null) {
+                            imageBitmap?.let {
+                                authViewModel.saveProfilePhotoInternally(
+                                    requireContext(),
+                                    it,
+                                    event.uiid
+                                )
+                            }
+                        } else {
+                            imageUri?.let {
+                                authViewModel.saveProfilePhotoInternally(
+                                    requireContext(),
+                                    convertUriToBimap(it, requireContext()), event.uiid
+                                )
+                            }
+                        }
                     }
                 }
             }
