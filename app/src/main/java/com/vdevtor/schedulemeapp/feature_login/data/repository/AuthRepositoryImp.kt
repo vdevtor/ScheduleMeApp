@@ -5,7 +5,7 @@ import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.vdevtor.common.core.Resource
-import com.vdevtor.common.data.model.AppUserModelDto
+import com.vdevtor.common.data.local.entity.AppUserModelDto
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.feature_login.domain.repository.AuthRepository
 import com.vdevtor.schedulemeapp.feature_login.presentation.util.isEmailValid
