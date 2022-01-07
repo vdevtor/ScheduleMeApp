@@ -6,8 +6,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.vdevtor.data.repository.UserRepositoryImp
 import com.vdevtor.domain.repository.UserRepository
-import com.vdevtor.database.UserDataBase
-import com.vdevtor.database.UserDataBase.Companion.DATABASE_USER
+import com.vdevtor.database.AppDataBase
+import com.vdevtor.database.AppDataBase.Companion.DATABASE_USER
 import com.vdevtor.schedulemeapp.core.AuthManager
 import com.vdevtor.schedulemeapp.core.UploadFileToFB
 import com.vdevtor.schedulemeapp.feature_login.data.repository.AuthGoogleSignImp
@@ -50,7 +50,7 @@ val useCasesModule = module{
 val appDataBaseModule = module {
 
     //Dao's
-    single { get<UserDataBase>().userDao }
+    single { get<AppDataBase>().userDao }
 
 
     //DB Instance
@@ -58,7 +58,7 @@ val appDataBaseModule = module {
     single {
         Room.databaseBuilder(
             get(),
-            UserDataBase::class.java,
+            AppDataBase::class.java,
             DATABASE_USER
         ).allowMainThreadQueries().fallbackToDestructiveMigration()
             .build()

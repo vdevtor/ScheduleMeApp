@@ -10,7 +10,7 @@ import com.vdevtor.data.local.entity.AppUserModelDto
     version = 1,
     exportSchema = true
 )
-abstract  class UserDataBase : RoomDatabase() {
+abstract  class AppDataBase : RoomDatabase() {
     abstract val userDao : AppUserDao
 
     companion object{
