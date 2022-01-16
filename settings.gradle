@@ -10,3 +10,4 @@ rootProject.name = "ScheduleMeApp"
 include ':app'
 include ':common'
 include ':database'
+include ':entities'

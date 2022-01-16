@@ -45,4 +45,5 @@
     <string name="gallery">Gallery</string>
     <string name="uploading_your_photo">Uploading your photo</string>
     <string name="button_add_photo">button Add photo</string>
+    <string name="make_sure_to_enable_cam_permi">Make Sure To enable Camera Permissions</string>
 </resources>

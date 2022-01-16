@@ -1,6 +1,7 @@
 package com.vdevtor.schedulemeapp.feature_login.presentation.register
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -24,6 +25,7 @@ import com.vdevtor.common.utils.verifyGalleryPermissions
 import com.vdevtor.data.local.entity.AppUserModelDto
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.databinding.FragmentRegisterBinding
+import com.vdevtor.schedulemeapp.feature_feed.presentation.FeedActivity
 import com.vdevtor.schedulemeapp.feature_login.domain.model.InputModel
 import com.vdevtor.schedulemeapp.feature_login.domain.model.ProvideAccountArray
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
@@ -90,7 +92,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
                         if (binding.uploadingPhoto.isVisible) binding.uploadingPhoto.visibility =
                             View.GONE
                         authViewModel.clearState()
-                        //TO DO GO TO NEXT ACTIVITY
+                        startActivity(Intent(requireContext(),FeedActivity::class.java))
                     }
 
                     is AuthStateInfo.Loading -> {
@@ -160,7 +162,7 @@ class RegisterFragment : BaseFragment<FragmentRegisterBinding>(FragmentRegisterB
             } else
                 Snackbar.make(
                     binding.root,
-                    "Make Sure To enable Camera Permissions",
+                    getString(R.string.make_sure_to_enable_cam_permi),
                     Snackbar.LENGTH_LONG
                 ).show()
         }

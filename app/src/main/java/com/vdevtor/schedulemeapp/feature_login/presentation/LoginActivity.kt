@@ -11,6 +11,5 @@ class LoginActivity : BaseActivity<ActivityLoginBinding>(
 
     override fun onStart() {
         super.onStart()
-
     }
 }

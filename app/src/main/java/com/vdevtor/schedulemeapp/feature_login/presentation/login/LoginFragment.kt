@@ -15,6 +15,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.vdevtor.common.core.BaseFragment
 import com.vdevtor.schedulemeapp.R
 import com.vdevtor.schedulemeapp.databinding.FragmentLoginBinding
+import com.vdevtor.schedulemeapp.feature_feed.presentation.FeedActivity
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthStateInfo
 import com.vdevtor.schedulemeapp.feature_login.presentation.AuthViewModel
 import com.vdevtor.schedulemeapp.feature_login.presentation.util.navigateWithAnimationsPopUp
@@ -69,8 +70,8 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
                 when (state) {
                     is AuthStateInfo.Success -> {
                         this.cancel()
-                        //TO DO GO TO ANOTHER ACTIVITY
                         authViewModel.clearState()
+                        startActivity(Intent(requireContext(),FeedActivity::class.java))
                     }
                     is AuthStateInfo.AuthError -> {
                         binding.progressBar.visibility = View.GONE
@@ -88,7 +89,7 @@ class LoginFragment : BaseFragment<FragmentLoginBinding>(FragmentLoginBinding::i
 
                     is AuthStateInfo.SuccessLoginWithGoogle -> {
                         this.cancel()
-                        // TO DO GO TO ANOTHER ACTIVITY
+                        startActivity(Intent(requireContext(),FeedActivity::class.java))
                     }
                     else -> Unit
                 }
